@@ -172,10 +172,10 @@ export default function EnhancedChaosmeter() {
           <div className="absolute inset-0 bg-black/50 group-hover:bg-black/30 transition-colors duration-300" />
           <div className="relative flex items-center space-x-2 z-10">
             <Twitter className="w-4 h-4" />
-            <span className="text-xs">TWEET THE CHAOS</span>
+            <span className="text-xs">SEND IT</span>
           </div>
-          <div className="absolute inset-0 border-2 border-cyan-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" 
-               style={{ boxShadow: '0 0 15px #0ff, 0 0 25px #0ff' }} />
+          <div className="absolute inset-0 border-2 border-cyan-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+            style={{ boxShadow: '0 0 15px #0ff, 0 0 25px #0ff' }} />
         </motion.button>
 
         <div className="max-w-[1800px] mx-auto grid grid-cols-1 lg:grid-cols-[1fr_2fr_1fr] gap-6">
@@ -372,17 +372,17 @@ export default function EnhancedChaosmeter() {
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: index * 0.1 }}
                     >
-                      <div className="flex flex-col">
-                        <span className="text-purple-400">{chain.name}</span>
-                        <span className="text-green-400 text-sm">{chain.tps} TPS</span>
+                      <div className="flex items-center space-x-2">
+                        <span className="text-2xl">{index === 0 ? "🥇" : index === 1 ? "🥈" : index === 2 ? "🥉" : ""}</span>
+                        <div className="flex flex-col">
+                          <span className="text-purple-400">{chain.name}</span>
+                          <span className="text-green-400 text-sm">{chain.tps} TPS</span>
+                        </div>
                       </div>
                       <span className="text-green-400">{chain.accumulatedExtrinsics.toLocaleString()} transactions</span>
                     </motion.div>
                   ))}
               </div>
-
-
-
             </div>
           </Card>
         </div>
