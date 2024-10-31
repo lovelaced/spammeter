@@ -37,6 +37,7 @@ export function ProjectTree() {
   const [scale, setScale] = useState(1)
   const [position, setPosition] = useState({ x: 0, y: 0 })
   const [isDragging, setIsDragging] = useState(false)
+  const [hoveredNode, setHoveredNode] = useState<string | null>(null)
   const containerRef = useRef<HTMLDivElement>(null)
 
   const treeData: TreeNode = {
@@ -176,7 +177,7 @@ export function ProjectTree() {
               y2={child.y || 0}
               stroke="#e6007a"
               strokeWidth="2"
-              opacity="0.5"
+              opacity={hoveredNode === node.id || hoveredNode === targetId ? "0.8" : "0.4"}
             />
             {renderConnections(child)}
           </g>
@@ -190,7 +191,10 @@ export function ProjectTree() {
 
     return (
       <>
-        <g key={node.id} transform={`translate(${node.x || 0},${node.y || 0})`}>
+        <g key={node.id} transform={`translate(${node.x || 0},${node.y || 0})`}
+          onMouseEnter={() => setHoveredNode(node.id)}
+          onMouseLeave={() => setHoveredNode(null)}
+          >
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -258,17 +262,19 @@ export function ProjectTree() {
         ))}
         
         {/* Polka Dots */}
-        <div className="absolute bottom-0 w-full h-32 overflow-hidden">
+       <div className="absolute inset-0 overflow-hidden">
           {Array.from({ length: 50 }).map((_, i) => (
-            <div
+            <motion.div
               key={i}
               className="absolute rounded-full bg-[#e6007a]"
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{ opacity: 0.1 + Math.random() * 0.2, scale: 1 }}
+              transition={{ duration: 1, delay: i * 0.02 }}
               style={{
-                width: `${Math.random() * 15 + 5}px`,
-                height: `${Math.random() * 15 + 5}px`,
-                bottom: `${Math.random() * 100}%`,
+                width: '10px',
+                height: '10px',
+                top: `${Math.random() * 100}%`,
                 left: `${Math.random() * 100}%`,
-                opacity: 0.1 + Math.random() * 0.2,
               }}
             />
           ))}
