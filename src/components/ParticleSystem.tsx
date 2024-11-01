@@ -34,7 +34,7 @@ const ParticleEffect: React.FC<ParticleEffectProps> = React.memo(({ tps }) => {
   )
 })
 
-const Particle: React.FC<{ index: number }> = React.memo(({ index }) => {
+const Particle: React.FC<{ index: number }> = React.memo(() => {
   const controls = useAnimation()
 
   useEffect(() => {

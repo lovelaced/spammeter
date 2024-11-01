@@ -1,10 +1,10 @@
 import { motion, AnimatePresence } from 'framer-motion'
-import { useEffect, useState, useCallback, useMemo } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { Card } from "@/components/ui/card"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
-import { Loader2, Zap, Activity, Hash, Trophy, Clock, Twitter } from "lucide-react"
+import { Loader2, Trophy, Clock, Rocket } from "lucide-react"
 import { polkadotChainsConfig, kusamaChainsConfig, ChainsConfig } from './chains'
 import { LiveBlockFeed } from './LiveBlockFeed'
 import AnimatedBackground from './AnimatedBackground'
@@ -33,7 +33,6 @@ export default function EnhancedChaosmeter() {
   const [totalTps, setTotalTps] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [showPolkadot, setShowPolkadot] = useState(true);
-  const [isHovering, setIsHovering] = useState(false)
 
 
   const calculateChainTps = useCallback((chain: ChainData) => {
@@ -154,40 +153,45 @@ export default function EnhancedChaosmeter() {
   }
 
   const handleTweet = () => {
-    const tweetText = encodeURIComponent(`The Spammening is real! Current TPS: ${totalTps.toFixed(2)} 🚀 #Polkadot @polkadot`)
+    const tweetText = encodeURIComponent(`The Spammening is real on @polkadot! Current TPS: ${totalTps.toFixed(2)} 🚀 #expectchaos`)
     window.open(`https://twitter.com/intent/tweet?text=${tweetText}`, '_blank')
   }
 
   return (
     <TooltipProvider>
       <div className="min-h-screen bg-[#0a0b1e] p-4 overflow-hidden font-sans relative">
-        {/* Tweet button positioned in the upper left corner */}
-        <motion.button
-          onClick={handleTweet}
-          className="absolute top-4 left-4 px-4 py-2 rounded-full font-bold text-sm z-50 relative overflow-hidden group"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          <div className="absolute inset-0 bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 opacity-75 group-hover:opacity-100 transition-opacity duration-300" />
-          <div className="absolute inset-0 bg-black/50 group-hover:bg-black/30 transition-colors duration-300" />
-          <div className="relative flex items-center space-x-2 z-10">
-            <Twitter className="w-4 h-4" />
-            <span className="text-xs">SEND IT</span>
-          </div>
-          <div className="absolute inset-0 border-2 border-cyan-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-            style={{ boxShadow: '0 0 15px #0ff, 0 0 25px #0ff' }} />
-        </motion.button>
+        {/* Flex container for tweet button and switch */}
+        <div className="flex items-center justify-between mb-6">
+          {/* Tweet Button */}
+          <motion.button
+            onClick={handleTweet}
+            className="px-6 py-2 rounded-full font-bold text-sm z-50 relative overflow-hidden group text-[#4ade80] flex items-center"
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
+            style={{ boxShadow: '0 0 20px #0ff, 0 0 30px #0ff, 0 0 40px #0ff' }}
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 opacity-70 rounded-full animate-pulse group-hover:opacity-90 transition-opacity duration-300" />
+            <div className="absolute inset-0 bg-black/50 rounded-full transition-colors duration-300 group-hover:bg-black/20" />
+            <div className="relative flex items-center space-x-2 z-10">
+              <Rocket className="w-5 h-5 animate-bounce" />
+              <span className="text-lg tracking-wider font-semibold">SEND TWEET</span>
+            </div>
+            <div className="absolute inset-0 border-2 border-pink-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          </motion.button>
 
-        <div className="max-w-[1800px] mx-auto grid grid-cols-1 lg:grid-cols-[1fr_2fr_1fr] gap-6">
-          <div className="lg:col-span-3 flex justify-center items-center space-x-2 mb-4">
-            <Label htmlFor="network-toggle" className="text-white">Kusama</Label>
+          {/* Polkadot/Kusama Switch */}
+          <div className="flex items-center space-x-2">
+            <Label htmlFor="network-toggle" className="text-white text-lg">Kusama</Label>
             <Switch
               id="network-toggle"
               checked={showPolkadot}
               onCheckedChange={setShowPolkadot}
             />
-            <Label htmlFor="network-toggle" className="text-white">Polkadot</Label>
+            <Label htmlFor="network-toggle" className="text-white text-lg">Polkadot</Label>
           </div>
+        </div>
+        <div className="max-w-[1800px] mx-auto grid grid-cols-1 lg:grid-cols-[1fr_2fr_1fr] gap-6">
+
           {/* Left Column - Block Time Heatmap */}
           <div className="hidden md:block">
             <Card className="bg-opacity-10 bg-black backdrop-blur-sm border-pink-500/20 relative overflow-hidden">
@@ -255,25 +259,25 @@ export default function EnhancedChaosmeter() {
                   animate={{ rotate: [0, -2, 2, 0] }}
                   transition={{ duration: 0.5, repeat: Infinity }}
                 />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  {isLoading ? (
-                    <Loader2 className="w-6 h-6 text-green-400 animate-spin" />
-                  ) : (
-                    <motion.div
-                      className="text-center"
-                      animate={{
-                        scale: [1, 1.1, 1],
-                        color: totalTps < 300 ? '#4ade80' : totalTps < 600 ? '#facc15' : '#ef4444'
-                      }}
-                      transition={{ duration: 0.5, repeat: Infinity }}
-                    >
-                      <span className="text-3xl font-bold">
-                        {totalTps.toFixed(2)}
-                      </span>
-                      <span className="text-xl block">TPS</span>
-                    </motion.div>
-                  )}
-                </div>
+<div className="absolute inset-0 flex items-center justify-center">
+  {isLoading ? (
+    <Loader2 className="w-6 h-6 text-green-400 animate-spin" />
+  ) : (
+    <div className="text-center">
+      <motion.span
+        className="text-3xl font-bold"
+        animate={{
+          color: totalTps < 300 ? '#4ade80' : totalTps < 600 ? '#facc15' : '#ef4444'
+        }}
+        transition={{ duration: 0.3 }}
+      >
+        {totalTps.toFixed(2)}
+      </motion.span>
+      <span className="text-xl block text-green-400">TPS</span>
+    </div>
+  )}
+</div>
+
               </div>
 
               {/* High TPS Chain Meters */}

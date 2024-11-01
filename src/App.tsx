@@ -1,5 +1,3 @@
-import React from 'react'
-import ProjectTree from '@/components/project-tree'
 import EnhancedChaosmeter from '@/components/enhanced-chaosmeter'
 
 function App() {
