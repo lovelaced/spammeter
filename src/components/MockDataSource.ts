@@ -29,7 +29,8 @@ export class MockDataSource extends DataSource {
       block_number: Math.floor(Math.random() * 1000000),
       extrinsics_num: Math.floor(Math.random() * 100),
       block_time_seconds: Math.random() * 20,
-      timestamp: Date.now()
+      timestamp: Date.now(),
+      total_proof_size: Math.random() * .01,
     };
   }
 }

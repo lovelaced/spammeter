@@ -30,6 +30,7 @@ export abstract class DataSource {
 
     if (update.relay !== "Kusama") return;
 
+
     const isValidBlockTime = update.block_time_seconds && update.block_time_seconds > 0;
     const tps = isValidBlockTime ? update.extrinsics_num / update.block_time_seconds : 0;
 
@@ -41,6 +42,7 @@ export abstract class DataSource {
           accumulatedExtrinsics: existingChain.accumulatedExtrinsics + update.extrinsics_num,
           blockTime: update.block_time_seconds,
           timestamp: update.timestamp,
+          weight: update.total_proof_size,
           tps,
         }
       : {
@@ -53,6 +55,7 @@ export abstract class DataSource {
           accumulatedExtrinsics: update.extrinsics_num,
           blockTime: update.block_time_seconds,
           timestamp: update.timestamp,
+          weight: update.total_proof_size,
           tps,
         };
 

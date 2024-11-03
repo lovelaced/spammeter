@@ -14,7 +14,6 @@ export class RealDataSource extends DataSource {
     this.eventSource.addEventListener('consumptionUpdate', (event: MessageEvent) => {
       try {
         const rawData: DataUpdate = JSON.parse(event.data);
-        console.log("raw data:", rawData);
         this.updateState(rawData);
       } catch (error) {
         console.error("Error parsing event data:", error);

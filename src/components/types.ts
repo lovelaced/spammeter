@@ -8,6 +8,7 @@ export interface ChainData {
     accumulatedExtrinsics: number;
     blockTime: number;
     timestamp: number;
+    weight: number;
     tps: number;
   }
   
@@ -22,6 +23,7 @@ export interface ChainData {
     extrinsics_num: number;
     block_time_seconds: number;
     timestamp: number;
+    total_proof_size: number;
   }
   
   export interface DataSourceState {
