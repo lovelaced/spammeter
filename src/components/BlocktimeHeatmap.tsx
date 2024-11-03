@@ -59,7 +59,7 @@ export const BlocktimeHeatmap: React.FC<BlocktimeHeatmapProps> = ({ chainData })
             </TooltipTrigger>
             <TooltipContent side="top" className="bg-black text-white p-2 rounded shadow-lg">
               <p className="font-bold">{data.name}</p>
-              <p>Blocktime: {data.blockTime.toFixed(2)}s</p>
+              <p>Blocktime: {data.blockTime?.toFixed(2)}s</p>
             </TooltipContent>
           </Tooltip>
         ))}

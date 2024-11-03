@@ -4,21 +4,21 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { useDataSource } from './useDataSource';
-//import { RealDataSource } from './RealDataSource';
+import { RealDataSource } from './RealDataSource';
 import { MockDataSource } from './MockDataSource';
 import { PopupWindow } from './PopupWindow';
 import { GlitchText } from './GlitchText';
 import { BlockchainVisualizer } from './BlockchainVisualizer';
 import { BlocktimeHeatmap } from './BlocktimeHeatmap';
+import { DataSourceSwitch } from './DataSourceSwitch';
 import { BlockFeed } from './BlockFeed';
 import { HighTPSPopup } from './HighTPSPopup';
 import { DitheredText } from './DitheredText';
 import { Rocket } from 'lucide-react';
 
-// change to MockDataSource for simulated data
-const dataSource = new MockDataSource();
-
 const ChaoticPopupChaosometer = () => {
+  const [useMockData, setUseMockData] = useState(true)
+  const dataSource = useMemo(() => useMockData ? new MockDataSource() : new RealDataSource(), [useMockData])
   const { chainData, totalTps } = useDataSource(dataSource);
   const [blocks, setBlocks] = useState<
     Array<{
@@ -75,6 +75,10 @@ const ChaoticPopupChaosometer = () => {
     setShowHighTPS(Object.values(chainData).some(chain => chain.tps > 1000));
   }, [chainData]);
 
+  const toggleDataSource = () => {
+    setUseMockData(prev => !prev)
+  }
+
   const closePopup = (id: string) => {
     setVisiblePopups(prev => prev.filter(p => p !== id));
   };
@@ -122,6 +126,7 @@ const ChaoticPopupChaosometer = () => {
             </span>
             <span className="absolute inset-0 bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 opacity-0 group-hover:opacity-100 transition-opacity" />
           </Button>
+          <DataSourceSwitch useMockData={useMockData} onToggle={toggleDataSource} />
         </motion.div>
         <h1
           className="text-4xl sm:text-6xl font-extrabold sm:font-bold mb-8 text-right sm:text-center pr-4 sm:pr-0 pl-28 sm:pl-0"
