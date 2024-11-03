@@ -1,0 +1,57 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - master
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Step 2: Set up Node.js environment
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '21'
+
+      # Step 3: Install dependencies and build
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build project
+        run: npm run build
+
+      # Step 4: Upload artifacts for deployment
+      - name: Upload artifact for GitHub Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+

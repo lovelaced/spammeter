@@ -1,12 +1,11 @@
 import React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { Zap, Sparkles } from 'lucide-react';
 
 interface BlockFeedProps {
-  blocks: Array<{ id: string; name: string; extrinsics: number; blockTime: number }>;
+  blocks: Array<{ id: string; name: string; extrinsics: number; blockTime: number, blockNumber: number }>;
 }
 
 export const BlockFeed: React.FC<BlockFeedProps> = ({ blocks }) => {
-  const formatBlockId = (id: string) => id.toString().toUpperCase().padStart(8, '0').slice(0, 8);
   const MAX_DISPLAYED_BLOCKS = 10;
 
   return (
@@ -19,32 +18,33 @@ export const BlockFeed: React.FC<BlockFeedProps> = ({ blocks }) => {
       </div>
       <div className="flex-1 overflow-hidden flex flex-col">
         <div className="grid grid-cols-4 gap-2 text-gray-400 border-b border-white p-1">
-          <span>Block ID</span>
+          <span>Block #</span>
           <span>Chain</span>
-          <span>Extrinsics</span>
+          <span>Transactions</span>
           <span>Block Time</span>
         </div>
-        <div className="flex-1 overflow-hidden relative">
-          <AnimatePresence initial={false}>
-            {blocks.slice(0, MAX_DISPLAYED_BLOCKS).map((block, index) => (
-              <motion.div
-                key={block.id}
-                initial={{ opacity: 0, y: -24 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, height: 0 }}
-                transition={{ duration: 0.2 }}
-                className="grid grid-cols-4 gap-2 items-center p-1 border-b border-white/20 absolute w-full"
-                style={{ top: `${index * 24}px` }}
-              >
-                <span className="text-gray-300">{formatBlockId(block.id)}</span>
-                <span className="text-gray-300">{block.name}</span>
-                <span className="text-gray-300">{block.extrinsics.toString().padStart(3, '0')}</span>
-                <span className="text-gray-300">
-                  {block.blockTime?.toFixed(2).padStart(5, '0')}s
-                </span>
-              </motion.div>
-            ))}
-          </AnimatePresence>
+        <div className="flex-1 overflow-y-auto">
+          {blocks.slice(0, MAX_DISPLAYED_BLOCKS).map((block) => (
+            <div
+              key={block.id}
+              className="grid grid-cols-4 gap-2 items-center p-1 border-b border-white/20"
+            >
+              <span className="text-gray-300">{block.blockNumber}</span>
+              <span className="text-gray-300">{block.name}</span>
+              <span className="text-gray-300 flex items-center">
+                {block.extrinsics.toString().padStart(3, '0')}
+                {block.extrinsics > 5000 && (
+                  <Sparkles className="ml-1 h-4 w-4 text-purple-400" />
+                )}
+              </span>
+              <span className="text-gray-300 flex items-center">
+                {block.blockTime?.toFixed(2).padStart(5, '0')}s
+                {block.blockTime < 5 && (
+                  <Zap className="ml-1 h-4 w-4 text-yellow-400" />
+                )}
+              </span>
+            </div>
+          ))}
         </div>
       </div>
     </div>

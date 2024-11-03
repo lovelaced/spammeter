@@ -4,7 +4,8 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { useDataSource } from './useDataSource';
-import { RealDataSource } from './RealDataSource';
+//import { RealDataSource } from './RealDataSource';
+import { MockDataSource } from './MockDataSource';
 import { PopupWindow } from './PopupWindow';
 import { GlitchText } from './GlitchText';
 import { BlockchainVisualizer } from './BlockchainVisualizer';
@@ -14,7 +15,8 @@ import { HighTPSPopup } from './HighTPSPopup';
 import { DitheredText } from './DitheredText';
 import { Rocket } from 'lucide-react';
 
-const dataSource = new RealDataSource();
+// change to MockDataSource for simulated data
+const dataSource = new MockDataSource();
 
 const ChaoticPopupChaosometer = () => {
   const { chainData, totalTps } = useDataSource(dataSource);
@@ -84,7 +86,7 @@ const ChaoticPopupChaosometer = () => {
   }, [chainData]);
 
   const backgroundElements = useMemo(() => {
-    return Array.from({ length: 15 }).map((_, i) => ({
+    return Array.from({ length: 15 }).map((_) => ({
       text: 'SPAM IS BEAUTIFUL',
       style: {
         top: `${Math.random() * 100}%`,
@@ -191,13 +193,6 @@ const ChaoticPopupChaosometer = () => {
               >
                 <div className="bg-white p-2">
                   <BlocktimeHeatmap chainData={chainData} />
-                  <div className="mt-2 text-xs">
-                    <span className="inline-block w-4  h-4 bg-[#cccccc] mr-1"></span>Slow (18s+)
-                    <span className="inline-block w-4 h-4 bg-[#999999] ml-2 mr-1"></span>Normal (12-18s)
-                    <span className="inline-block w-4 h-4 bg-[#666666] ml-2 mr-1"></span>Fast (6-12s)
-                    <span className="inline-block w-4 h-4 bg-[#333333] ml-2 mr-1"></span>Very Fast (3-6s)
-                    <span className="inline-block w-4 h-4 bg-[#000000] ml-2 mr-1"></span>Super Fast (&lt;3s)
-                  </div>
                 </div>
               </PopupWindow>
               </React.Fragment>

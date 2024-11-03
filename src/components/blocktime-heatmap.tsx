@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
 interface BlocktimeHeatmapProps {
-  chainData: Record<string, { name: string, blockTime: number }>;
+  chainData: Record<string, { blockTime: number }>;
 }
 
 export const BlocktimeHeatmap: React.FC<BlocktimeHeatmapProps> = ({ chainData }) => {
@@ -40,8 +40,8 @@ export const BlocktimeHeatmap: React.FC<BlocktimeHeatmapProps> = ({ chainData })
               </div>
             </TooltipTrigger>
             <TooltipContent side="top" className="bg-black text-white p-2 rounded shadow-lg">
-              <p className="font-bold">{data.name}</p>
-              <p>Blocktime: {data.blockTime?.toFixed(2)}s</p>
+              <p className="font-bold">{name}</p>
+              <p>Blocktime: {data.blockTime.toFixed(2)}s</p>
             </TooltipContent>
           </Tooltip>
         ))}
