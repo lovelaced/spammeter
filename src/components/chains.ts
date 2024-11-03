@@ -142,3 +142,4 @@ export type BlockData = {
   extrinsics: number;
   blockTime: number;
 };
+

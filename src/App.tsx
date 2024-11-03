@@ -1,9 +1,9 @@
-import EnhancedChaosmeter from '@/components/enhanced-chaosmeter'
+import ChaoticPopupChaosmeter from '@/components/chaotic-popup-chaosmeter'
 
 function App() {
   return (
     <div className="App">
-      <EnhancedChaosmeter />
+      <ChaoticPopupChaosmeter />
     </div>
   )
 }
