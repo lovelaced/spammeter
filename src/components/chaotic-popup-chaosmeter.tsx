@@ -99,7 +99,7 @@ const ChaoticPopupChaosometer = () => {
   }, []);
 
   const sendTweet = () => {
-    const tweetText = `Check out the Spam Meter! Current TPS: ${totalTps.toFixed(2)}`;
+    const tweetText = `Just saw ${totalTps.toFixed(2)} TPS during the @Polkadot spammening! #expectchaos`;
     const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`;
     window.open(tweetUrl, '_blank');
   };
