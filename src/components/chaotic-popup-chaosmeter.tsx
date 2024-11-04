@@ -90,7 +90,7 @@ const ChaoticPopupChaosometer = () => {
   }, [chainData]);
 
   const backgroundElements = useMemo(() => {
-    return Array.from({ length: 15 }).map((_) => ({
+    return Array.from({ length: 20 }).map((_) => ({
       text: 'SPAM IS BEAUTIFUL',
       style: {
         top: `${Math.random() * 100}%`,
@@ -226,7 +226,7 @@ const ChaoticPopupChaosometer = () => {
                   <div className="grid grid-cols-3 gap-2 text-xs font-bold border-b-2 border-black pb-1 mb-2">
                     <span>Chain</span>
                     <span>TPS</span>
-                    <span>Total Extrinsics</span>
+                    <span>Total Transactions</span>
                   </div>
                   {leaderboard.map((data, index) => (
                     <div

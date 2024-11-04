@@ -26,7 +26,7 @@ export abstract class DataSource {
     const chainId = `${update.relay}-${update.para_id}`;
     const existingChain = this.state.chainData[chainId];
     const nameMapping = update.relay === "Polkadot" ? polkadotParaIdToChainName : kusamaParaIdToChainName;
-    const displayName = nameMapping[update.para_id] || `Unknown (${update.para_id})`;
+    const displayName = nameMapping[update.para_id] || `${update.relay}-${update.para_id}`;
 
     if (update.relay !== "Kusama") return;
 
