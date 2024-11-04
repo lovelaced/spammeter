@@ -11,7 +11,7 @@ export const BlockFeed: React.FC<BlockFeedProps> = ({ blocks }) => {
   return (
     <div className="w-full h-full overflow-hidden bg-[#0000ff] font-mono text-xs flex flex-col">
       <div className="bg-[#0000ff] text-white p-1 flex items-center justify-between border-b border-white">
-        <span className="font-bold">Block Feed</span>
+        <span className="font-bold">Realtime Blocks</span>
         <span className="hidden sm:inline">
           F1:Help F2:Menu F3:View F4:Edit F5:Copy F6:RenMov F7:Mkdir F8:Delete
         </span>
