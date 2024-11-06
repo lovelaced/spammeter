@@ -31,30 +31,26 @@ export const BlocktimeHeatmap: React.FC<BlocktimeHeatmapProps> = ({ chainData })
         {sortedChainData.map(([id, data]) => (
           <Tooltip key={id}>
             <TooltipTrigger>
-            <div className="w-4 h-4 sm:w-6 sm:h-6 flex items-center justify-center">
+              <div className="w-4 h-4 sm:w-6 sm:h-6 flex items-center justify-center">
                 <div
                   className={`relative flex items-center justify-center ${getSize(data.blockTime)}`}
                 >
-                <div
-                  className={`absolute inset-0 ${getSize(data.blockTime)}`}
-                  style={{
-                    backgroundColor: getColor(data.blockTime),
-                    maskImage:
-                      "url(\"data:image/svg+xml,%3Csvg width='2' height='2' viewBox='0 0 2 2' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='1' height='1' fill='black'/%3E%3Crect x='1' y='1' width='1' height='1' fill='black'/%3E%3C/svg%3E\")",
-                    maskSize: '2px 2px',
-                    opacity: 1,
-                  }}
-                />
-                {data.blockTime < 3 && (
-                  <div 
-                    className={`absolute inset-0 ${getSize(data.blockTime)} border-2 border-white rounded-sm`}
+                  <div
+                    className={`absolute inset-0 ${getSize(data.blockTime)}`}
                     style={{
-                      animation: 'pulse 0.3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                      backgroundColor: getColor(data.blockTime),
+                      maskImage:
+                        "url(\"data:image/svg+xml,%3Csvg width='2' height='2' viewBox='0 0 2 2' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='1' height='1' fill='black'/%3E%3Crect x='1' y='1' width='1' height='1' fill='black'/%3E%3C/svg%3E\")",
+                      maskSize: '2px 2px',
                       opacity: 1,
                     }}
                   />
-                )}
-              </div>
+                  {data.blockTime < 3 && (
+                    <div
+                      className={`absolute inset-0 ${getSize(data.blockTime)} border-2 border-white rounded-sm animate-[pulse_0.3s_cubic-bezier(0.4,0,0.6,1)_infinite]`}
+                    />
+                  )}
+                </div>
               </div>
             </TooltipTrigger>
             <TooltipContent side="top" className="bg-black text-white p-2 rounded shadow-lg">

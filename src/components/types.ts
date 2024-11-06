@@ -10,6 +10,8 @@ export interface ChainData {
     timestamp: number;
     weight: number;
     tps: number;
+    tpsEma: number;
+    recentBlocks: Array<{ extrinsics: number; timestamp: number }>; // Add this line
   }
   
   export interface ChainDataMap {
@@ -29,4 +31,7 @@ export interface ChainData {
   export interface DataSourceState {
     chainData: ChainDataMap;
     totalTps: number;
+    totalTpsEma: number;
+    confidenceMetric: number;
+    dataPoints: number;
   }

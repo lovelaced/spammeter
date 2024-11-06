@@ -54,33 +54,27 @@ export class MockDataSource extends DataSource {
 
     if (this.surgeState === 'rampingUp') {
       const elapsed = currentTime - this.surgeStartTime;
-      const rampUpDuration = this.getRampUpDuration();
-
-      if (elapsed >= rampUpDuration) {
-        // Ramp-up complete, start high TPS phase
+      if (elapsed >= this.baseRampUpDuration) {
+        // Ramp-up complete, enter high TPS state
         this.surgeState = 'high';
-        this.surgeStartTime = currentTime;
-        this.currentTPS = this.highTPS;
-        console.log('Reached high TPS phase');
+        console.log('Entered high TPS state');
       } else {
-        // Calculate TPS factor based on ramp-up progress with exponential easing
-        const progress = elapsed / rampUpDuration;
-        const exponent = 3; // Accelerate after 15,000 TPS
-        const easedProgress = Math.pow(progress, exponent);
-        this.currentTPS = this.normalTPS + easedProgress * (this.highTPS - this.normalTPS);
-        console.log(`Ramping up TPS: ${Math.round(this.currentTPS)} TPS (Progress: ${(progress * 100).toFixed(1)}%)`);
+        // Calculate TPS factor based on ramp-up progress
+        const progress = elapsed / this.baseRampUpDuration;
+        this.currentTPS = this.normalTPS + progress * (this.highTPS - this.normalTPS);
+        console.log(`Ramping up TPS: ${Math.round(this.currentTPS)} TPS`);
       }
     }
 
     if (this.surgeState === 'high') {
       const elapsed = currentTime - this.surgeStartTime;
-      if (elapsed >= this.surgeDuration()) {
-        // Start ramping down
+      if (elapsed >= this.baseRampUpDuration + this.surgeDuration()) {
+        // High TPS state complete, start ramping down
         this.surgeState = 'rampingDown';
         this.surgeStartTime = currentTime;
         console.log('Starting ramp-down');
       } else {
-        console.log(`Maintaining high TPS: ${Math.round(this.currentTPS)} TPS`);
+        this.currentTPS = this.highTPS;
       }
     }
 
@@ -121,7 +115,6 @@ export class MockDataSource extends DataSource {
         const initialBlockTime = 6 + Math.random() * 6; // Random between 6 and 12
         blockTimeInfo = { initial: initialBlockTime, current: initialBlockTime };
         this.paraBlockTimes.set(para_id, blockTimeInfo);
-        console.log(`Assigned initial block time for para_id ${para_id}: ${initialBlockTime.toFixed(2)}s`);
       }
 
       let block_time_seconds = blockTimeInfo.current;
@@ -213,10 +206,6 @@ export class MockDataSource extends DataSource {
       const j = Math.floor(Math.random() * (i + 1));
       [array[i], array[j]] = [array[j], array[i]];
     }
-  }
-
-  private getRampUpDuration(): number {
-    return this.baseRampUpDuration; // 15 seconds total
   }
 
   private surgeDuration(): number {

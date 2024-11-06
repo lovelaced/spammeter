@@ -7,17 +7,22 @@ export abstract class DataSource {
   protected state: DataSourceState = {
     chainData: {},
     totalTps: 0,
+    totalTpsEma: 0,
+    confidenceMetric: 0,
+    dataPoints: 0,
   };
+
+  private readonly TARGET_WINDOW_SIZE = 30000; // 30 seconds in milliseconds
+  private readonly ALPHA = 0.1; // EMA smoothing factor
+  private readonly MIN_DATA_POINTS = 10; // Minimum number of data points for high confidence
 
   abstract start(): void;
   abstract stop(): void;
 
-  // method to register listeners
   addListener(listener: (state: DataSourceState) => void) {
     this.listeners.push(listener);
   }
 
-  // method to notify listeners of state changes
   private notifyListeners() {
     this.listeners.forEach(listener => listener(this.state));
   }
@@ -30,52 +35,105 @@ export abstract class DataSource {
 
     if (update.relay !== "Kusama") return;
 
+    const updatedRecentBlocks = [
+      ...(existingChain?.recentBlocks || []),
+      { extrinsics: update.extrinsics_num, timestamp: update.timestamp, blockTime: update.block_time_seconds }
+    ];
 
-    const isValidBlockTime = update.block_time_seconds && update.block_time_seconds > 0;
-    const tps = isValidBlockTime ? update.extrinsics_num / update.block_time_seconds : 0;
+    const { tps: chainTps } = this.calculateTps(updatedRecentBlocks);
+    const chainTpsEma = this.calculateEma(existingChain?.tpsEma || chainTps, chainTps);
 
-    const updatedChain: ChainData = existingChain
-      ? {
-          ...existingChain,
-          blockNumber: update.block_number,
-          extrinsics: update.extrinsics_num,
-          accumulatedExtrinsics: existingChain.accumulatedExtrinsics + update.extrinsics_num,
-          blockTime: update.block_time_seconds,
-          timestamp: update.timestamp,
-          weight: update.total_proof_size,
-          tps,
-        }
-      : {
-          id: chainId,
-          name: displayName,
-          paraId: update.para_id,
-          relay: update.relay,
-          blockNumber: update.block_number,
-          extrinsics: update.extrinsics_num,
-          accumulatedExtrinsics: update.extrinsics_num,
-          blockTime: update.block_time_seconds,
-          timestamp: update.timestamp,
-          weight: update.total_proof_size,
-          tps,
-        };
+    const updatedChain: ChainData = {
+      ...(existingChain || {}),
+      id: chainId,
+      name: displayName,
+      paraId: update.para_id,
+      relay: update.relay,
+      blockNumber: update.block_number,
+      extrinsics: update.extrinsics_num,
+      accumulatedExtrinsics: (existingChain?.accumulatedExtrinsics || 0) + update.extrinsics_num,
+      blockTime: update.block_time_seconds,
+      timestamp: update.timestamp,
+      weight: update.total_proof_size,
+      tps: chainTps,
+      tpsEma: chainTpsEma,
+      recentBlocks: updatedRecentBlocks
+    };
 
     const updatedChainData: ChainDataMap = {
       ...this.state.chainData,
       [chainId]: updatedChain,
     };
 
-    const totalTps = Object.values(updatedChainData).reduce(
-      (sum, chain) => (chain.blockTime && chain.blockTime > 0 ? sum + chain.tps : sum),
-      0
-    );
+    const { tps: totalTps, timeWindow: globalTimeWindow } = this.calculateTotalTps(updatedChainData);
+    const totalTpsEma = this.calculateEma(this.state.totalTpsEma || totalTps, totalTps);
+    const dataPoints = this.state.dataPoints + 1;
+    const confidenceMetric = this.calculateConfidenceMetric(globalTimeWindow, dataPoints);
 
-    this.state = { chainData: updatedChainData, totalTps };
+    this.state = { 
+      chainData: updatedChainData, 
+      totalTps, 
+      totalTpsEma, 
+      confidenceMetric,
+      dataPoints,
+    };
 
-    // notify listeners of the state change
     this.notifyListeners();
+  }
+
+  private calculateTps(blocks: Array<{ extrinsics: number; timestamp: number; blockTime?: number }>): { tps: number, timeWindow: number } {
+    if (blocks.length < 2) return { tps: 0, timeWindow: 0 };
+
+    blocks.sort((a, b) => a.timestamp - b.timestamp);
+    const timeWindow = Math.min(blocks[blocks.length - 1].timestamp - blocks[0].timestamp, this.TARGET_WINDOW_SIZE);
+    const relevantBlocks = blocks.filter(block => block.timestamp >= blocks[blocks.length - 1].timestamp - timeWindow);
+
+    const totalExtrinsics = relevantBlocks.reduce((sum, block) => sum + block.extrinsics, 0);
+    const tps = (totalExtrinsics * 1000) / timeWindow;
+
+    return { tps, timeWindow };
+  }
+
+  private calculateTotalTps(chainData: ChainDataMap): { tps: number, timeWindow: number } {
+    const allBlocks = Object.values(chainData).flatMap(chain => chain.recentBlocks);
+    return this.calculateTps(allBlocks);
+  }
+
+  private calculateEma(oldValue: number, newValue: number): number {
+    return this.ALPHA * newValue + (1 - this.ALPHA) * oldValue;
+  }
+
+  private calculateConfidenceMetric(timeWindow: number, dataPoints: number): number {
+    const timeConfidence = Math.min(timeWindow / this.TARGET_WINDOW_SIZE, 1);
+    const dataPointConfidence = Math.min(dataPoints / this.MIN_DATA_POINTS, 1);
+    return (timeConfidence + dataPointConfidence) / 2;
   }
 
   getState(): DataSourceState {
     return this.state;
+  }
+
+  protected getChainData(chainId: string): ChainData | undefined {
+    return this.state.chainData[chainId];
+  }
+
+  protected getAllChainData(): ChainDataMap {
+    return this.state.chainData;
+  }
+
+  getTotalTps(): number {
+    return this.state.totalTps;
+  }
+
+  getTotalTpsEma(): number {
+    return this.state.totalTpsEma;
+  }
+
+  getConfidenceMetric(): number {
+    return this.state.confidenceMetric;
+  }
+
+  isHighConfidence(): boolean {
+    return this.state.confidenceMetric >= 0.8;
   }
 }
