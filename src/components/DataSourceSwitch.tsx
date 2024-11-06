@@ -15,7 +15,7 @@ export function DataSourceSwitch({ useMockData, onToggle }: DataSourceSwitchProp
         onCheckedChange={onToggle}
       />
       <Label htmlFor="data-source" className="text-sm font-medium text-black">
-        {useMockData ? 'Testnet Data' : 'Real Data'}
+        {useMockData ? 'Testnet Data' : 'Kusama Data'}
       </Label>
     </div>
   )

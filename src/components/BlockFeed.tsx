@@ -33,7 +33,7 @@ export const BlockFeed: React.FC<BlockFeedProps> = ({ blocks }) => {
               <span className="text-gray-300">{block.name}</span>
               <span className="text-gray-300 flex items-center">
                 {block.extrinsics.toString().padStart(3, '0')}
-                {block.extrinsics > 5000 && (
+                {block.extrinsics > 3000 && (
                   <Sparkles className="ml-1 h-4 w-4 text-purple-400" />
                 )}
               </span>
