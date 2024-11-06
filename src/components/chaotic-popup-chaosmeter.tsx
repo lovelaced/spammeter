@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { useDataSource } from './useDataSource';
 import { RealDataSource } from './RealDataSource';
+import { TestnetDataSource } from './TestnetDataSource';
 import { MockDataSource } from './MockDataSource';
 import { PopupWindow } from './PopupWindow';
 import { GlitchText } from './GlitchText';
@@ -18,7 +19,7 @@ import { Rocket } from 'lucide-react';
 
 const ChaoticPopupChaosometer = () => {
   const [useMockData, setUseMockData] = useState(true)
-  const dataSource = useMemo(() => useMockData ? new MockDataSource() : new RealDataSource(), [useMockData])
+  const dataSource = useMemo(() => useMockData ? new TestnetDataSource() : new RealDataSource(), [useMockData])
   const { chainData, totalTps } = useDataSource(dataSource);
   const [blocks, setBlocks] = useState<
     Array<{

@@ -96,13 +96,25 @@ export const kusamaChainsConfig: ChainsConfig = {
 
 } as const;
 
+export const westendChainsConfig: ChainsConfig = {
+  Westend: { paraId: 3, displayName: 'Westend' },
+  Assethub: { paraId: 1000, displayName: 'Assethub' },
+  Bridgehub: { paraId: 1002, displayName: 'Bridgehub' },
+  Collectives: { paraId: 1001, displayName: 'Collectives' },
+  Coretime: { paraId: 1005, displayName: 'Coretime' },
+  People: { paraId: 1004, displayName: 'People' },
+  YAP2022: { paraId: 2022, displayName: 'YAP2022' },
+} as const;
+
 // Type for chain names for both networks
 export type PolkadotChainName = keyof typeof polkadotChainsConfig;
 export type KusamaChainName = keyof typeof kusamaChainsConfig;
+export type WestendChainName = keyof typeof westendChainsConfig;
 
 // Extract chain names automatically from the config
 export const polkadotChainNames = Object.keys(polkadotChainsConfig) as PolkadotChainName[];
 export const kusamaChainNames = Object.keys(kusamaChainsConfig) as KusamaChainName[];
+export const westendChainNames = Object.keys(westendChainsConfig) as KusamaChainName[];
 
 // Create paraId to chainName mappings for easier lookup
 export const polkadotParaIdToChainName = Object.fromEntries(
@@ -112,6 +124,10 @@ export const polkadotParaIdToChainName = Object.fromEntries(
 export const kusamaParaIdToChainName = Object.fromEntries(
   Object.entries(kusamaChainsConfig).map(([chain, config]) => [config.paraId, chain])
 ) as Record<number, KusamaChainName>;
+
+export const westendParaIdToChainName = Object.fromEntries(
+  Object.entries(westendChainsConfig).map(([chain, config]) => [config.paraId, chain])
+) as Record<number, WestendChainName>;
 
 // Define the structure for the metrics of each chain
 export type ChainMetrics = {

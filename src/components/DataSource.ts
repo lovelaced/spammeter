@@ -1,5 +1,5 @@
 import { DataUpdate, DataSourceState, ChainData, ChainDataMap } from './types';
-import { polkadotParaIdToChainName, kusamaParaIdToChainName } from './chains';
+import { polkadotParaIdToChainName, kusamaParaIdToChainName, westendParaIdToChainName } from './chains';
 
 export abstract class DataSource {
   private listeners: Array<(state: DataSourceState) => void> = [];
@@ -30,10 +30,19 @@ export abstract class DataSource {
   protected updateState(update: DataUpdate): void {
     const chainId = `${update.relay}-${update.para_id}`;
     const existingChain = this.state.chainData[chainId];
-    const nameMapping = update.relay === "Polkadot" ? polkadotParaIdToChainName : kusamaParaIdToChainName;
-    const displayName = nameMapping[update.para_id] || `${update.relay}-${update.para_id}`;
 
-    if (update.relay !== "Kusama") return;
+    let nameMapping;
+    if (update.relay === "Polkadot") {
+      nameMapping = polkadotParaIdToChainName;
+    } else if (update.relay === "Kusama") {
+      nameMapping = kusamaParaIdToChainName;
+    } else if (update.relay === "Westend") {
+      nameMapping = westendParaIdToChainName;
+    } else {
+      nameMapping = {}; // fallback to empty mapping if unknown
+    }
+
+    const displayName = nameMapping[update.para_id] || `${update.relay}-${update.para_id}`;
 
     const updatedRecentBlocks = [
       ...(existingChain?.recentBlocks || []),
