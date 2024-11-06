@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/button';
 import { useDataSource } from './useDataSource';
 import { RealDataSource } from './RealDataSource';
 import { TestnetDataSource } from './TestnetDataSource';
-import { MockDataSource } from './MockDataSource';
 import { PopupWindow } from './PopupWindow';
 import { GlitchText } from './GlitchText';
 import { BlockchainVisualizer } from './BlockchainVisualizer';
