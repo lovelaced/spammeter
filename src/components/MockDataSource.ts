@@ -159,8 +159,6 @@ export class MockDataSource extends DataSource {
   private distributeTPS(): void {
     const totalTPS = this.currentTPS;
 
-    const paraTpsMap = new Map<number, number>();
-
     const surgePercentage = 0.5; // 50% of parachains will surge
     const numSurgingParaIds = Math.floor(this.totalParachains * surgePercentage);
 
