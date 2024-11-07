@@ -33,6 +33,7 @@ export abstract class DataSource {
 
     let nameMapping;
     if (update.relay === "Polkadot") {
+      return; // ignore polkadot data
       nameMapping = polkadotParaIdToChainName;
     } else if (update.relay === "Kusama") {
       nameMapping = kusamaParaIdToChainName;
