@@ -2,7 +2,7 @@ import React from 'react';
 import { Clock } from 'lucide-react';
 
 interface HighTPSPopupProps {
-  chainData: Record<string, { tps: number; blockTime: number }>;
+  chainData: Record<string, { tps: number; blockTime: number, name: string }>;
 }
 
 export const HighTPSPopup: React.FC<HighTPSPopupProps> = ({ chainData }) => {
@@ -33,7 +33,7 @@ export const HighTPSPopup: React.FC<HighTPSPopupProps> = ({ chainData }) => {
               <div className="text-[8px] mt-0.5">TPS</div>
             </div>
           </div>
-          <div className="text-[10px] font-bold mt-1 truncate w-full text-center">{name}</div>
+          <div className="text-[10px] font-bold mt-1 truncate w-full text-center">{data.name}</div>
           <div className="text-[8px] mt-0.5 flex items-center justify-center">
             <Clock className="w-3 h-3 mr-0.5" />
             {data.blockTime?.toFixed(2)}s
