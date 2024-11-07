@@ -15,6 +15,7 @@ import { BlockFeed } from './BlockFeed';
 import { HighTPSPopup } from './HighTPSPopup';
 import { DitheredText } from './DitheredText';
 import { Rocket } from 'lucide-react';
+import { TPSMeter } from './TpsMeter';
 
 const ChaoticPopupChaosometer = () => {
   const [useMockData, setUseMockData] = useState(true)
@@ -44,13 +45,13 @@ const ChaoticPopupChaosometer = () => {
       timestamp: chain.timestamp,
       weight: chain.weight,
     }));
-  
+
     setBlocks(prev => {
       const updatedBlocks = [...prev];
-  
+
       for (const newBlock of newBlocks) {
         const existingIndex = updatedBlocks.findIndex(block => block.id === newBlock.id);
-  
+
         if (existingIndex === -1) {
           // Add new block to the start
           updatedBlocks.unshift(newBlock);
@@ -60,18 +61,18 @@ const ChaoticPopupChaosometer = () => {
           updatedBlocks.unshift(newBlock);
         }
       }
-  
+
       // Get current time
       const currentTime = Date.now(); // In milliseconds
       const cutoffTimestamp = currentTime - 60 * 1000; // 1 minute ago
-  
+
       // Filter out blocks older than 1 minute
       const prunedBlocks = updatedBlocks.filter(block => block.timestamp >= cutoffTimestamp);
-  
+
       // Limit to the 100 most recent blocks
       return prunedBlocks.slice(0, 100);
     });
-  
+
     setShowHighTPS(Object.values(chainData).some(chain => chain.tps > 1000));
   }, [chainData]);
 
@@ -137,37 +138,15 @@ const ChaoticPopupChaosometer = () => {
 
         <div className="grid grid-cols-12 gap-4 mb-4">
           <AnimatePresence>
-            {visiblePopups.includes('tps') && (
-              <React.Fragment key="tps">
-                <PopupWindow
-                  title="TPS METER"
+            <React.Fragment key="tps">
+              {visiblePopups.includes('tps') && (
+                <TPSMeter
+                  key="tps"
+                  totalTps={totalTps}
                   onClose={() => closePopup('tps')}
-                  className={`col-span-12 ${
-                    showHighTPS ? 'sm:col-span-4 lg:col-span-3' : 'sm:col-span-7 lg:col-span-5'
-                  } h-[320px] w-full`}
-                >
-                  <div className="w-full h-full flex flex-col items-center justify-center bg-white p-4">
-                    <div className="flex-1 flex flex-col items-center justify-center">
-                      <div className="w-48 h-48 rounded-full border-8 border-black flex items-center justify-center relative">
-                        <div
-                          className="absolute inset-0 rounded-full"
-                          style={{
-                            background: `conic-gradient(black ${totalTps / 500}deg, transparent ${
-                              totalTps / 500
-                            }deg)`,
-                            transform: 'rotate(-90deg)',
-                          }}
-                        />
-                        <div className="z-10 bg-white rounded-full w-36 h-36 flex items-center justify-center">
-                          <div className="text-3xl font-bold">{totalTps.toFixed(2)}</div>
-                        </div>
-                      </div>
-                      <div className="text-xl font-bold mt-4">TPS</div>
-                    </div>
-                  </div>
-                </PopupWindow>
-              </React.Fragment>
-            )}
+                />
+              )}
+            </React.Fragment>
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -176,72 +155,71 @@ const ChaoticPopupChaosometer = () => {
               className={`col-span-12 sm:col-span-8 lg:col-span-6 ${showHighTPS ? 'block' : 'hidden'}`}
             >
               <React.Fragment key="high-tps">
-              <PopupWindow
-                title="HIGH TPS CHAINS"
-                onClose={() => setShowHighTPS(false)}
-                className="h-[320px] w-full"
-              >
-                <div className="h-full overflow-hidden">
-                  <HighTPSPopup chainData={chainData} />
-                </div>
-              </PopupWindow>
+                <PopupWindow
+                  title="HIGH TPS CHAINS"
+                  onClose={() => setShowHighTPS(false)}
+                  className="h-[320px] w-full"
+                >
+                  <div className="h-full overflow-hidden">
+                    <HighTPSPopup chainData={chainData} />
+                  </div>
+                </PopupWindow>
               </React.Fragment>
             </motion.div>
             {visiblePopups.includes('blocktime') && (
               <React.Fragment key="blocktime">
-              <PopupWindow
-                title="BLOCKTIME HEATMAP"
-                onClose={() => closePopup('blocktime')}
-                className={`col-span-12 ${
-                  showHighTPS ? 'hidden lg:block lg:col-span-3' : 'sm:col-span-5 lg:col-span-4'
-                } w-full`}
-              >
-                <div className="bg-white p-2">
-                  <BlocktimeHeatmap chainData={chainData} />
-                </div>
-              </PopupWindow>
+                <PopupWindow
+                  title="BLOCKTIME HEATMAP"
+                  onClose={() => closePopup('blocktime')}
+                  className={`col-span-12 ${showHighTPS ? 'hidden lg:block lg:col-span-3' : 'sm:col-span-5 lg:col-span-4'
+                    } w-full`}
+                >
+                  <div className="bg-white p-2">
+                    <BlocktimeHeatmap chainData={chainData} />
+                  </div>
+                </PopupWindow>
               </React.Fragment>
             )}
             {visiblePopups.includes('feed') && (
               <React.Fragment key="feed">
-              <PopupWindow
-                title="BLOCK FEED"
-                onClose={() => closePopup('feed')}
-                className="col-span-12 sm:col-span-6 lg:col-span-7 w-full"
-              >
-                <div className="h-[300px]">
-                  <BlockFeed blocks={blocks} />
-                </div>
-              </PopupWindow>
+                <PopupWindow
+                  title="BLOCK FEED"
+                  onClose={() => closePopup('feed')}
+                  className="col-span-12 sm:col-span-6 lg:col-span-7 w-full"
+                >
+                  <div className="h-[300px]">
+                    <BlockFeed blocks={blocks} />
+                  </div>
+                </PopupWindow>
               </React.Fragment>
             )}
             {visiblePopups.includes('leaderboard') && (
               <React.Fragment key="leaderboard">
-              <PopupWindow
-                title="TPS LEADERBOARD"
-                onClose={() => closePopup('leaderboard')}
-                className="col-span-12  sm:col-span-6 lg:col-span-5 w-full"
-              >
-                <div className="w-full space-y-1 bg-white p-2">
-                  <div className="grid grid-cols-3 gap-2 text-xs font-bold border-b-2 border-black pb-1 mb-2">
-                    <span>Chain</span>
-                    <span>TPS</span>
-                    <span>Total Transactions</span>
-                  </div>
-                  {leaderboard.map((data, index) => (
-                    <div
-                      key={data.name}
-                      className="grid grid-cols-3 gap-2 items-center text-xs border-b border-dotted border-black pb-1"
-                    >
-                      <span className="truncate">
-                        {index + 1}. {data.name}
-                      </span>
-                      <span className="font-bold">{data.tps.toFixed(2)}</span>
-                      <span>{data.accumulatedExtrinsics.toLocaleString()}</span>
+                <PopupWindow
+                  title="TPS LEADERBOARD"
+                  onClose={() => closePopup('leaderboard')}
+                  className="col-span-12  sm:col-span-6 lg:col-span-5 w-full"
+                >
+                  <div className="w-full space-y-1 bg-white p-2">
+                    <div className="grid grid-cols-3 gap-2 text-xs font-bold border-b-2 border-black pb-1 mb-2">
+                      <span>Chain</span>
+                      <span>TPS</span>
+                      <span>Total Transactions</span>
                     </div>
-                  ))}
-                </div>
-              </PopupWindow>
+                    {leaderboard.map((data, index) => (
+                      <div
+                        key={data.name}
+                        className="grid grid-cols-3 gap-2 items-center text-xs border-b border-dotted border-black pb-1"
+                      >
+                        <span className="truncate">
+                          {index + 1}. {data.name}
+                        </span>
+                        <span className="font-bold">{data.tps.toFixed(2)}</span>
+                        <span>{data.accumulatedExtrinsics.toLocaleString()}</span>
+                      </div>
+                    ))}
+                  </div>
+                </PopupWindow>
               </React.Fragment>
             )}
           </AnimatePresence>

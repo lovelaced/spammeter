@@ -128,7 +128,7 @@ const BlockContent: React.FC<{ block: VisibleBlock }> = ({ block }) => {
       }}
     >
       <div className="bg-black text-white p-1 text-xs flex items-center justify-between">
-        <span className="truncate">{percentFull}% Full</span>
+        <span className="truncate">{percentFull}% Full Block</span>
         <X size={12} />
       </div>
       <img

@@ -43,6 +43,7 @@ export abstract class DataSource {
     }
 
     const displayName = nameMapping[update.para_id] || `${update.relay}-${update.para_id}`;
+    const blockTime = update.block_time_seconds ?? 0;
 
     const updatedRecentBlocks = [
       ...(existingChain?.recentBlocks || []),
@@ -61,7 +62,7 @@ export abstract class DataSource {
       blockNumber: update.block_number,
       extrinsics: update.extrinsics_num,
       accumulatedExtrinsics: (existingChain?.accumulatedExtrinsics || 0) + update.extrinsics_num,
-      blockTime: update.block_time_seconds,
+      blockTime: blockTime,
       timestamp: update.timestamp,
       weight: update.total_proof_size,
       tps: chainTps,

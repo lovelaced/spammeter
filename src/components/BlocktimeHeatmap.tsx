@@ -8,7 +8,7 @@ interface BlocktimeHeatmapProps {
 export const BlocktimeHeatmap: React.FC<BlocktimeHeatmapProps> = ({ chainData }) => {
   const getColor = (blockTime: number) => {
     if (blockTime < 4) return '#0000ff';
-    if (blockTime < 7) return '#333333';
+    if (blockTime < 7) return '#000000';
     if (blockTime < 13) return '#666666';
     if (blockTime < 19) return '#999999';
     return '#cccccc';
@@ -22,7 +22,14 @@ export const BlocktimeHeatmap: React.FC<BlocktimeHeatmapProps> = ({ chainData })
   };
 
   const sortedChainData = useMemo(() => {
-    return Object.entries(chainData).sort(([, a], [, b]) => a.blockTime - b.blockTime);
+    return Object.entries(chainData)
+      .filter(([, data]) => data.blockTime !== undefined && !isNaN(data.blockTime) && data.blockTime !== 0) // filter for valid blocktime
+      .sort(([, a], [, b]) => {
+        if (a.blockTime === b.blockTime) {
+          return a.name.localeCompare(b.name); // sort alphabetically if blockTime is the same
+        }
+        return a.blockTime - b.blockTime; // sort by blockTime
+      });
   }, [chainData]);
 
   return (
@@ -45,7 +52,7 @@ export const BlocktimeHeatmap: React.FC<BlocktimeHeatmapProps> = ({ chainData })
                       opacity: 1,
                     }}
                   />
-                  {data.blockTime < 3 && (
+                  {data.blockTime < 4 && (
                     <div
                       className={`absolute inset-0 ${getSize(data.blockTime)} border-2 border-white rounded-sm animate-[pulse_0.3s_cubic-bezier(0.4,0,0.6,1)_infinite]`}
                     />
