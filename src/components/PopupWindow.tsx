@@ -14,18 +14,23 @@ export const PopupWindow: React.FC<PopupWindowProps> = ({ title, children, onClo
     initial={{ scale: 0.95, opacity: 0 }}
     animate={{ scale: 1, opacity: 1 }}
     exit={{ scale: 0.95, opacity: 0 }}
-    className={`bg-white border-4 border-black overflow-hidden flex flex-col w-full ${className}`}
-    style={{ boxShadow: '8px 8px 0 0 rgba(0,0,0,1)' }}
+    className={`relative overflow-hidden ${className}`}
+    style={{
+      background: 'linear-gradient(170deg, #75FBFD 0%, #07FFFF 15%, #2CCFFF 20%,  #6F5BFF 75%, #7916F3 100%)',
+      padding: '2px',
+    }}
   >
-    <div className="bg-black text-white p-1 flex items-center justify-between w-full">
-      <div className="text-sm font-bold flex items-center">
-        <span className="inline-block w-3 h-3 bg-white mr-2"></span>
-        {title}
+    <div className="flex flex-col w-full h-full">
+      <div className="pl-2 flex items-center justify-between w-full bg-transparent">
+        <div className="text-med font-bold flex items-center text-black">
+          <span className="inline-block w-3.5 h-3.5 bg-black mr-2" />
+          {title}
+        </div>
+        <button onClick={onClose} className="text-black hover:text-gray-500">
+          <X size={20} />
+        </button>
       </div>
-      <button onClick={onClose} className="text-white hover:text-gray-300">
-        <X size={16} />
-      </button>
+      <div className="flex-1 overflow-auto bg-black m-[2px]">{children}</div>
     </div>
-    <div className="flex-1 overflow-auto">{children}</div>
   </motion.div>
 );

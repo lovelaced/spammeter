@@ -1,5 +1,4 @@
 import { Switch } from '@/components/ui/switch'
-import { Label } from '@/components/ui/label'
 
 interface DataSourceSwitchProps {
   useMockData: boolean
@@ -14,9 +13,6 @@ export function DataSourceSwitch({ useMockData, onToggle }: DataSourceSwitchProp
         checked={!useMockData}
         onCheckedChange={onToggle}
       />
-      <Label htmlFor="data-source" className="text-sm font-medium text-black">
-        {useMockData ? 'Testnet Data' : 'Kusama Data'}
-      </Label>
     </div>
   )
 }

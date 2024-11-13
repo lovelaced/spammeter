@@ -1,4 +1,6 @@
 // src/types/chains.ts
+import { Zap, Rabbit, Contact, Mail, ArrowsUpFromLine, Bitcoin, Power } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 
 // Define the type for Chain
 export type ChainsConfig = Record<string, ChainConfig>;
@@ -7,6 +9,8 @@ export type ChainsConfig = Record<string, ChainConfig>;
 export type ChainConfig = {
   paraId: number;
   displayName: string;
+  icon?: LucideIcon;
+  color?: string;
 };
 
 // Create a central configuration object for chains
@@ -97,13 +101,13 @@ export const kusamaChainsConfig: ChainsConfig = {
 } as const;
 
 export const westendChainsConfig: ChainsConfig = {
-  Westend: { paraId: 3, displayName: 'Westend' },
-  Assethub: { paraId: 1000, displayName: 'Assethub' },
-  Bridgehub: { paraId: 1002, displayName: 'Bridgehub' },
-  Collectives: { paraId: 1001, displayName: 'Collectives' },
-  Coretime: { paraId: 1005, displayName: 'Coretime' },
-  People: { paraId: 1004, displayName: 'People' },
-  YAP2022: { paraId: 2022, displayName: 'YAP2022' },
+  Westend: { paraId: 3, displayName: 'Westend', icon: ArrowsUpFromLine, color: 'bg-purple-600' },
+  Assethub: { paraId: 1000, displayName: 'Assethub', icon: Bitcoin, color: 'bg-orange-500' },
+  Bridgehub: { paraId: 1002, displayName: 'Bridgehub', icon: Mail, color: 'bg-red-600' },
+  Collectives: { paraId: 1001, displayName: 'Collectives', icon: Power, color: 'bg-green-600' },
+  Coretime: { paraId: 1005, displayName: 'Coretime', icon: Zap, color: 'bg-yellow-400' },
+  People: { paraId: 1004, displayName: 'People', icon: Contact, color: 'bg-blue-600' },
+  YAP2022: { paraId: 2022, displayName: 'YAP2022', icon: Rabbit, color: 'bg-pink-600' },
 } as const;
 
 // Type for chain names for both networks

@@ -13,9 +13,10 @@ import { BlocktimeHeatmap } from './BlocktimeHeatmap';
 import { DataSourceSwitch } from './DataSourceSwitch';
 import { BlockFeed } from './BlockFeed';
 import { HighTPSPopup } from './HighTPSPopup';
-import { DitheredText } from './DitheredText';
-import { Rocket } from 'lucide-react';
 import { TPSMeter } from './TpsMeter';
+import { ChainData } from './types';
+import { westendChainsConfig } from './chains';
+
 
 const ChaoticPopupChaosometer = () => {
   const [useMockData, setUseMockData] = useState(true)
@@ -33,7 +34,7 @@ const ChaoticPopupChaosometer = () => {
     }>
   >([]);
   const [visiblePopups, setVisiblePopups] = useState(['tps', 'blocktime', 'feed', 'leaderboard']);
-  const [showHighTPS, setShowHighTPS] = useState(false);
+  const [showHighTPS, setShowHighTPS] = useState(true);
 
   useEffect(() => {
     const newBlocks = Object.values(chainData).map(chain => ({
@@ -73,7 +74,7 @@ const ChaoticPopupChaosometer = () => {
       return prunedBlocks.slice(0, 100);
     });
 
-    setShowHighTPS(Object.values(chainData).some(chain => chain.tps > 1000));
+    setShowHighTPS(true);
   }, [chainData]);
 
   const toggleDataSource = () => {
@@ -90,51 +91,56 @@ const ChaoticPopupChaosometer = () => {
       .slice(0, 10);
   }, [chainData]);
 
-  const backgroundElements = useMemo(() => {
-    return Array.from({ length: 20 }).map((_) => ({
-      text: 'SPAM IS BEAUTIFUL',
-      style: {
-        top: `${Math.random() * 100}%`,
-        left: `${Math.random() * 100}%`,
-        transform: `rotate(${Math.random() * 360}deg)`,
-        opacity: 0.1 + Math.random() * 0.2,
-        fontSize: `${2 + Math.random() * 3}rem`,
-      },
-    }));
-  }, []);
-
   const sendTweet = () => {
     const tweetText = `Just saw ${totalTps.toFixed(2)} TPS during the @Polkadot spammening! #expectchaos`;
     const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`;
     window.open(tweetUrl, '_blank');
   };
 
+  const renderChainName = (chain: ChainData) => {
+    const chainConfig = Object.values(westendChainsConfig).find(c => c.paraId === chain.paraId)
+    
+    if (chainConfig && chainConfig.icon) {
+      const Icon = chainConfig.icon
+      return (
+        <div className={`p-1 rounded-full ${chainConfig.color}`}>
+          <Icon className="w-4 h-4 text-white" aria-label={chain.name} />
+        </div>
+      )
+    }
+    
+    return <span className="truncate">{chain.name}</span>
+  }
+
   return (
     <div className="min-h-screen bg-white p-4 font-mono text-black relative overflow-hidden">
       <div className="max-w-6xl mx-auto relative">
-        <motion.div
-          className="absolute top-0 left-0 z-50 w-24 sm:w-auto"
-          initial={{ x: -100, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ type: 'spring', stiffness: 100, damping: 10 }}
-        >
-          <Button
-            onClick={sendTweet}
-            className="bg-black text-white border-4 border-black px-4 py-2 text-sm font-bold hover:bg-white hover:text-black transition-colors shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:shadow-none relative overflow-hidden group"
-          >
-            <span className="relative z-10 flex items-center justify-center">
-              SEND TWEET <Rocket className="w-4 h-4 ml-2 animate-bounce" />
-            </span>
-            <span className="absolute inset-0 bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 opacity-0 group-hover:opacity-100 transition-opacity" />
-          </Button>
-          <DataSourceSwitch useMockData={useMockData} onToggle={toggleDataSource} />
-        </motion.div>
-        <h1
-          className="text-4xl sm:text-6xl font-extrabold sm:font-bold mb-8 text-right sm:text-center pr-4 sm:pr-0 pl-28 sm:pl-0"
-          style={{ textShadow: '4px 4px 0 #000' }}
-        >
-          <GlitchText text="SPAM METER" tps={totalTps} />
-        </h1>
+        <div className="flex justify-between items-center mb-8">
+          <div className="flex items-center space-x-2">
+          <img
+              src="/Polkadot_Token_Pink.svg"
+              alt="Polkadot Logo"
+              className="w-9 h-9"
+            />
+            <h1
+              className="text-3xl sm:text-4xl font-extrabold sm:font-bold"
+            >
+              <GlitchText text="SPAMMENING" tps={totalTps} />
+            </h1>
+          </div>
+          <div className="flex items-center space-x-4">
+            <DataSourceSwitch useMockData={useMockData} onToggle={toggleDataSource} />
+            <Button
+              onClick={sendTweet}
+              className="bg-black text-white border-4 border-black px-4 py-2 text-sm font-bold hover:bg-white hover:text-black transition-colors hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:shadow-none relative overflow-hidden group"
+            >
+              <span className="relative z-10 flex items-center justify-center">
+                SEND TWEET
+              </span>
+              <span className="absolute inset-0 bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+            </Button>
+          </div>
+        </div>
 
         <div className="grid grid-cols-12 gap-4 mb-4">
           <AnimatePresence>
@@ -174,7 +180,7 @@ const ChaoticPopupChaosometer = () => {
                   className={`col-span-12 ${showHighTPS ? 'hidden lg:block lg:col-span-3' : 'sm:col-span-5 lg:col-span-4'
                     } w-full`}
                 >
-                  <div className="bg-white p-2">
+                  <div className="bg-black p-2">
                     <BlocktimeHeatmap chainData={chainData} />
                   </div>
                 </PopupWindow>
@@ -187,7 +193,7 @@ const ChaoticPopupChaosometer = () => {
                   onClose={() => closePopup('feed')}
                   className="col-span-12 sm:col-span-6 lg:col-span-7 w-full"
                 >
-                  <div className="h-[300px]">
+                  <div className="h-[325px]">
                     <BlockFeed blocks={blocks} />
                   </div>
                 </PopupWindow>
@@ -200,7 +206,7 @@ const ChaoticPopupChaosometer = () => {
                   onClose={() => closePopup('leaderboard')}
                   className="col-span-12  sm:col-span-6 lg:col-span-5 w-full"
                 >
-                  <div className="w-full space-y-1 bg-white p-2">
+                  <div className="w-full h-full space-y-1 bg-white p-2">
                     <div className="grid grid-cols-3 gap-2 text-xs font-bold border-b-2 border-black pb-1 mb-2">
                       <span>Chain</span>
                       <span>TPS</span>
@@ -209,13 +215,14 @@ const ChaoticPopupChaosometer = () => {
                     {leaderboard.map((data, index) => (
                       <div
                         key={data.name}
-                        className="grid grid-cols-3 gap-2 items-center text-xs border-b border-dotted border-black pb-1"
+                        className="grid grid-cols-12 gap-2 items-center text-xs border-b border-dotted border-primary-foreground/20 pb-1"
                       >
-                        <span className="truncate">
-                          {index + 1}. {data.name}
+                        <span className="col-span-1">{index + 1}.</span>
+                        <span className="col-span-4 flex items-center gap-1">
+                          {renderChainName(data)}
                         </span>
-                        <span className="font-bold">{data.tps.toFixed(2)}</span>
-                        <span>{data.accumulatedExtrinsics.toLocaleString()}</span>
+                        <span className="col-span-3 font-bold">{data.tps.toFixed(2)}</span>
+                        <span className="col-span-4">{data.accumulatedExtrinsics.toLocaleString()}</span>
                       </div>
                     ))}
                   </div>
@@ -232,9 +239,6 @@ const ChaoticPopupChaosometer = () => {
 
       {/* Static, dithered background elements */}
       <div className="fixed inset-0 pointer-events-none">
-        {backgroundElements.map((element, index) => (
-          <DitheredText key={index} text={element.text} style={element.style} />
-        ))}
       </div>
     </div>
   );

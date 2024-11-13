@@ -27,21 +27,23 @@ export const TPSMeter: React.FC<TPSMeterProps> = ({ totalTps, onClose }) => {
       onClose={onClose}
       className="col-span-12 sm:col-span-4 lg:col-span-3 h-[320px] w-full"
     >
-      <div className="w-full h-full flex flex-col items-center justify-center bg-white p-4">
-        <div className="flex-1 flex flex-col items-center justify-center">
-          <div className="w-48 h-48 rounded-full border-8 border-black flex items-center justify-center relative">
-            <div
-              className="absolute inset-0 rounded-full"
-              style={{
-                background: `conic-gradient(black ${angle}deg, transparent ${angle}deg)`,
-                transform: 'rotate(-90deg)',
-              }}
-            />
-            <div className="z-10 bg-white rounded-full w-36 h-36 flex items-center justify-center">
-              <div className="text-3xl font-bold">{totalTps.toFixed(2)}</div>
+      <div className="w-full h-full flex items-center justify-center bg-black p-4">
+        <div className="relative w-full pb-[100%]">
+          <div className="absolute inset-0">
+            <div className="w-full h-full rounded-full border-8 border-white flex items-center justify-center">
+              <div
+                className="absolute inset-0 rounded-full"
+                style={{
+                  background: `conic-gradient(white ${angle}deg, transparent ${angle}deg)`,
+                  transform: 'rotate(-90deg)',
+                }}
+              />
+              <div className="z-10 bg-black rounded-full w-[calc(100%-46px)] h-[calc(100%-46px)] flex flex-col items-center justify-center">
+                <div className="text-3xl font-bold text-white">{totalTps.toFixed(1)}</div>
+                <div className="text-xl font-bold mt-2 text-white">TPS</div>
+              </div>
             </div>
           </div>
-          <div className="text-xl font-bold mt-4">TPS</div>
         </div>
       </div>
     </PopupWindow>

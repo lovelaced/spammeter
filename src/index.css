@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@200..900&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -16,6 +16,18 @@
   --text-popover-foreground: #4ade80;
 }
 
+@keyframes pulse-subtle {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+.animate-pulse-subtle {
+  animation: pulse-subtle 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
 
 @keyframes glitch {
   0% {
@@ -51,4 +63,9 @@
 .font-cyber {
   font-family: 'Orbitron', sans-serif;
   animation: glitch 5s infinite;
+}
+
+.font-unbounded {
+  font-family: 'Unbounded', mono;
+  font-weight: 600;
 }
