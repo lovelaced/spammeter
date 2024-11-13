@@ -11,14 +11,14 @@ export const HighTPSPopup: React.FC<HighTPSPopupProps> = ({ chainData }) => {
     .sort(([, a], [, b]) => b.tps - a.tps);
 
   return (
-    <div className="w-full h-full overflow-auto p-2 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+    <div className="w-full h-full bg-white overflow-auto p-2 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
       {highTPSChains.length === 0 ? (
         <div className="col-span-full flex flex-col items-center justify-center h-full">
           <div className="relative">
             <Zap className="w-20 h-20 text-[#07FFFF] animate-pulse-subtle" />
             <div className="absolute inset-0 w-20 h-20 bg-[#07FFFF] rounded-full filter blur-xl opacity-30 animate-pulse-subtle"></div>
           </div>
-          <div className="text-white text-sm mt-2">charging...</div>
+          <div className="text-black text-sm mt-2">charging...</div>
         </div>
       ) : (
         highTPSChains.map(([name, data]) => (
