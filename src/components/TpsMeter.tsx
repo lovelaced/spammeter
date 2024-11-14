@@ -7,14 +7,16 @@ interface TPSMeterProps {
 }
 
 export const TPSMeter: React.FC<TPSMeterProps> = ({ totalTps, onClose }) => {
-  // Linear scale calculation
+  // Logarithmic scale calculation
   const getScaledAngle = (tps: number) => {
-    const minTps = 0;
+    const minTps = 1; // To avoid log(0)
     const maxTps = 60000; // Maximum TPS
-    const clampedTps = Math.min(Math.max(tps, minTps), maxTps);
-
-    // Map the linear value to an angle between 0 and 360 degrees
-    return (clampedTps / maxTps) * 360;
+    const logMinTps = Math.log10(minTps);
+    const logMaxTps = Math.log10(maxTps);
+    const logTps = Math.log10(Math.max(minTps, tps));
+    
+    // Map the logarithmic value to an angle between 0 and 360 degrees
+    return ((logTps - logMinTps) / (logMaxTps - logMinTps)) * 360;
   };
 
   const angle = getScaledAngle(totalTps);
