@@ -99,7 +99,7 @@ const ChaoticPopupChaosometer = () => {
 
   const renderChainName = (chain: ChainData) => {
     const chainConfig = Object.values(westendChainsConfig).find(c => c.paraId === chain.paraId)
-    
+
     if (chainConfig && chainConfig.icon) {
       const Icon = chainConfig.icon
       return (
@@ -108,7 +108,7 @@ const ChaoticPopupChaosometer = () => {
         </div>
       )
     }
-    
+
     return <span className="truncate">{chain.name}</span>
   }
 
@@ -117,17 +117,18 @@ const ChaoticPopupChaosometer = () => {
       <div className="max-w-6xl mx-auto relative">
         <div className="flex justify-between items-center mb-8">
           <div className="flex items-center space-x-2">
-          <img
+            <img
               src="/Polkadot_Token_Pink.svg"
               alt="Polkadot Logo"
-              className="w-9 h-9"
+              className="w-6 h-6 sm:w-9 sm:h-9" // Smaller on mobile, larger on bigger screens
             />
             <h1
-              className="text-3xl sm:text-4xl font-extrabold sm:font-bold"
+              className="text-xl sm:text-xl md:text-4xl font-extrabold" // Smaller text on mobile, larger on bigger screens
             >
               <GlitchText text="SPAMMENING" tps={totalTps} />
             </h1>
           </div>
+
           <div className="flex items-center space-x-4">
             <DataSourceSwitch useMockData={useMockData} onToggle={toggleDataSource} />
             <Button
@@ -137,7 +138,7 @@ const ChaoticPopupChaosometer = () => {
               <span className="relative z-10 flex items-center justify-center">
                 SEND TWEET
               </span>
-              <span className="absolute inset-0 bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+              <span className="absolute inset-0 bg-gradient-to-r from-[#7916F3] to-[#ea4070] opacity-0 group-hover:opacity-100 transition-opacity" />
             </Button>
           </div>
         </div>
@@ -221,7 +222,9 @@ const ChaoticPopupChaosometer = () => {
                         <span className="col-span-4 flex items-center gap-1">
                           {renderChainName(data)}
                         </span>
-                        <span className="col-span-3 font-bold">{data.tps.toFixed(2)}</span>
+                        <span className="col-span-3 font-bold">
+                          {data.tps === 0 ? '--' : data.tps.toFixed(2)}
+                        </span>
                         <span className="col-span-4">{data.accumulatedExtrinsics.toLocaleString()}</span>
                       </div>
                     ))}
