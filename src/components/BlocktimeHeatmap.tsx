@@ -7,7 +7,7 @@ interface BlocktimeHeatmapProps {
 
 export const BlocktimeHeatmap: React.FC<BlocktimeHeatmapProps> = ({ chainData }) => {
   const getColor = (blockTime: number) => {
-    if (blockTime < 7) return '#ffff00'; // Yellow
+    if (blockTime < 5.5) return '#ffff00'; // Yellow
     if (blockTime < 12) return '#ffffff'; // White
     if (blockTime < 13) return '#999999'; // Light Gray
     if (blockTime < 19) return '#666666'; // Dark Gray
@@ -53,7 +53,7 @@ export const BlocktimeHeatmap: React.FC<BlocktimeHeatmapProps> = ({ chainData })
                         opacity: 1,
                       }}
                     />
-                    {data.blockTime < 7 && (
+                    {data.blockTime < 5.5 && (
                       <div
                         className={`absolute inset-0 ${getSize(data.blockTime)} border-2 border-black rounded-sm animate-[pulse_0.3s_cubic-bezier(0.4,0,0.6,1)_infinite]`}
                       />

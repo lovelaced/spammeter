@@ -16,6 +16,7 @@ import { HighTPSPopup } from './HighTPSPopup';
 import { TPSMeter } from './TpsMeter';
 import { ChainData } from './types';
 import { westendChainsConfig } from './chains';
+import SpamButton from './SpamButton';
 
 
 const ChaoticPopupChaosometer = () => {
@@ -131,15 +132,18 @@ const ChaoticPopupChaosometer = () => {
 
           <div className="flex items-center space-x-4">
             <DataSourceSwitch useMockData={useMockData} onToggle={toggleDataSource} />
-            <Button
-              onClick={sendTweet}
-              className="bg-black text-white border-4 border-black px-4 py-2 text-sm font-bold hover:bg-white hover:text-black transition-colors hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:shadow-none relative overflow-hidden group"
-            >
-              <span className="relative z-10 flex items-center justify-center">
-                SEND TWEET
-              </span>
-              <span className="absolute inset-0 bg-gradient-to-r from-[#7916F3] to-[#ea4070] opacity-0 group-hover:opacity-100 transition-opacity" />
-            </Button>
+            <div className="flex items-center space-x-2">
+              <SpamButton />
+              <Button
+                onClick={sendTweet}
+                className="bg-black text-white border-4 border-black px-4 py-2 text-sm font-bold hover:bg-white hover:text-black transition-colors hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:shadow-none relative overflow-hidden group"
+              >
+                <span className="relative z-10 flex items-center justify-center">
+                  SEND TWEET
+                </span>
+                <span className="absolute inset-0 bg-gradient-to-r from-[#7916F3] to-[#ea4070] opacity-0 group-hover:opacity-100 transition-opacity" />
+              </Button>
+            </div>
           </div>
         </div>
 
