@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Loader2 } from 'lucide-react'
 
 const LIMIT = 1500 // Number of Receiver accounts
+const WS_URL = 'ws://127.0.0.1:58651'
 
 export function SpamButton() {
     const [status, setStatus] = useState('idle')
@@ -25,7 +26,7 @@ export function SpamButton() {
         }
         try {
             console.log('Initializing API...')
-            const wsProvider = new WsProvider('ws://127.0.0.1:65259')
+            const wsProvider = new WsProvider(WS_URL)
             const apiInstance = await ApiPromise.create({ provider: wsProvider })
             console.log('API initialized successfully.')
             setApi(apiInstance)
@@ -107,7 +108,7 @@ export function SpamButton() {
                     privateKey: '//Alice//stash',
                     startIndex: start,
                     limit: workerLimit,
-                    apiInstanceUrl: 'ws://127.0.0.1:65259',
+                    apiInstanceUrl: WS_URL,
                 })
 
                 workerPromises.push(workerPromise)
