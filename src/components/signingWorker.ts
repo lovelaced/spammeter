@@ -4,6 +4,7 @@
 export default null;
 
 import { ApiPromise, WsProvider, Keyring } from '@polkadot/api';
+import type { AccountInfo } from '@polkadot/types/interfaces';
 import { cryptoWaitReady } from '@polkadot/util-crypto';
 
 self.onmessage = async (event) => {
@@ -15,14 +16,17 @@ self.onmessage = async (event) => {
     const wsProvider = new WsProvider(apiInstanceUrl);
     const api = await ApiPromise.create({ provider: wsProvider });
     const genesisHash = api.genesisHash;
-    const runtimeVersion = api.runtimeVersion;
+    //const runtimeVersion = api.runtimeVersion;
     const keyring = new Keyring({ type: 'sr25519' });
 
     const alice = keyring.addFromUri(privateKey);
     const aliceAddress = alice.address;
 
-    const { nonce: startingNonce } = await api.query.system.account(aliceAddress);
-    const baseNonce = startingNonce.toNumber() + startIndex;
+
+    // Fetch the account information and cast it to AccountInfo
+    const accountInfo = (await api.query.system.account(aliceAddress)) as AccountInfo;
+    const startingNonce = accountInfo.nonce.toNumber();
+    const baseNonce = startingNonce + startIndex;
 
     const signedTxs = [];
 
@@ -39,9 +43,8 @@ self.onmessage = async (event) => {
         nonce: txNonce,
         era: 0,
         blockHash: genesisHash,
-        genesisHash: genesisHash,
-        specVersion: runtimeVersion.specVersion,
-        transactionVersion: runtimeVersion.transactionVersion,
+        // specVersion: runtimeVersion.specVersion,
+        // transactionVersion: runtimeVersion.transactionVersion,
       });
 
       // Serialize the signed transaction
@@ -59,6 +62,10 @@ if ((i + 1) % Math.max(1, Math.floor(limit / 100)) === 0) {
 
     self.postMessage({ signedTxs });
   } catch (error) {
-    self.postMessage({ error: error.message });
+    if (error instanceof Error) {
+      self.postMessage({ error: error.message });
+    } else {
+      self.postMessage({ error: String(error) });
+    }
   }
 };

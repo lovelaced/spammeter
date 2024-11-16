@@ -2,12 +2,12 @@
 
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { ApiPromise, WsProvider } from '@polkadot/api'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
 
-const LIMIT = 16000 // Number of Receiver accounts
+const LIMIT = 1500 // Number of Receiver accounts
 
 export function SpamButton() {
   const [status, setStatus] = useState('idle')
@@ -25,8 +25,7 @@ export function SpamButton() {
     }
     try {
       console.log('Initializing API...')
-      //const wsProvider = new WsProvider('ws://127.0.0.1:49764')
-      const wsProvider = new WsProvider('wss://westend-yap-2022.parity-testnet.parity.io')
+      const wsProvider = new WsProvider('ws://127.0.0.1:65259')
       const apiInstance = await ApiPromise.create({ provider: wsProvider })
       console.log('API initialized successfully.')
       setApi(apiInstance)
@@ -108,7 +107,7 @@ export function SpamButton() {
           privateKey: '//Alice//stash',
           startIndex: start,
           limit: workerLimit,
-          apiInstanceUrl: 'ws://127.0.0.1:49764',
+          apiInstanceUrl: 'ws://127.0.0.1:65259',
         })
 
         workerPromises.push(workerPromise)
