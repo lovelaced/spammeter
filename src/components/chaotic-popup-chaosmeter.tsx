@@ -88,6 +88,7 @@ const ChaoticPopupChaosometer = () => {
 
   const leaderboard = useMemo(() => {
     return Object.values(chainData)
+      .filter((chain) => !isNaN(chain.tps) && isFinite(chain.tps)) // filter out NaN or Infinity
       .sort((a, b) => b.tps - a.tps)
       .slice(0, 10);
   }, [chainData]);
@@ -116,27 +117,25 @@ const ChaoticPopupChaosometer = () => {
   return (
     <div className="min-h-screen bg-white p-4 font-mono text-black relative overflow-hidden">
       <div className="max-w-6xl mx-auto relative">
-        <div className="flex justify-between items-center mb-8">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center pb-4">
           <div className="flex items-center space-x-2">
             <img
               src="/Polkadot_Token_Pink.svg"
               alt="Polkadot Logo"
-              className="w-6 h-6 sm:w-9 sm:h-9" // Smaller on mobile, larger on bigger screens
+              className="w-6 h-6 sm:w-9 sm:h-9"
             />
-            <h1
-              className="text-xl sm:text-xl md:text-4xl font-extrabold" // Smaller text on mobile, larger on bigger screens
-            >
+            <h1 className="text-xl sm:text-2xl md:text-4xl font-extrabold">
               <GlitchText text="SPAMMENING" tps={totalTps} />
             </h1>
           </div>
 
-          <div className="flex items-center space-x-4">
+          <div className="flex flex-col space-y-2 sm:flex-row sm:items-center sm:space-x-4 pt-2">
             <DataSourceSwitch useMockData={useMockData} onToggle={toggleDataSource} />
-            <div className="flex items-center space-x-2">
+            <div className="flex space-x-2">
               <SpamButton />
               <Button
                 onClick={sendTweet}
-                className="bg-black text-white border-4 border-black px-4 py-2 text-sm font-bold hover:bg-white hover:text-black transition-colors hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:shadow-none relative overflow-hidden group"
+                className="h-[38px] bg-black text-white border-4 border-black px-4 py-2 text-sm font-bold hover:bg-white hover:text-black transition-colors active:shadow-none relative overflow-hidden group"
               >
                 <span className="relative z-10 flex items-center justify-center">
                   SEND TWEET
@@ -182,12 +181,9 @@ const ChaoticPopupChaosometer = () => {
                 <PopupWindow
                   title="BLOCKTIME HEATMAP"
                   onClose={() => closePopup('blocktime')}
-                  className={`col-span-12 ${showHighTPS ? 'hidden lg:block lg:col-span-3' : 'sm:col-span-5 lg:col-span-4'
-                    } w-full`}
+                  className={`col-span-12 ${showHighTPS ? 'hidden lg:block lg:col-span-3' : 'sm:col-span-5 lg:col-span-4'} w-full`}
                 >
-                  <div className="bg-black p-2">
-                    <BlocktimeHeatmap chainData={chainData} />
-                  </div>
+                  <BlocktimeHeatmap chainData={chainData} />
                 </PopupWindow>
               </React.Fragment>
             )}
@@ -227,7 +223,7 @@ const ChaoticPopupChaosometer = () => {
                           {renderChainName(data)}
                         </span>
                         <span className="col-span-3 font-bold">
-                          {data.tps === 0 ? '--' : data.tps.toFixed(2)}
+                          {data.tps === 0 || !isFinite(data.tps) || isNaN(data.tps) ? '--' : data.tps.toFixed(2)}
                         </span>
                         <span className="col-span-4">{data.accumulatedExtrinsics.toLocaleString()}</span>
                       </div>

@@ -7,9 +7,10 @@ interface PopupWindowProps {
   children: React.ReactNode;
   onClose: () => void;
   className?: string;
+  footer?: React.ReactNode;
 }
 
-export const PopupWindow: React.FC<PopupWindowProps> = ({ title, children, onClose, className }) => (
+export const PopupWindow: React.FC<PopupWindowProps> = ({ title, children, onClose, className, footer }) => (
   <motion.div
     initial={{ scale: 0.95, opacity: 0 }}
     animate={{ scale: 1, opacity: 1 }}
@@ -31,6 +32,12 @@ export const PopupWindow: React.FC<PopupWindowProps> = ({ title, children, onClo
         </button>
       </div>
       <div className="flex-1 overflow-auto bg-black m-[2px]">{children}</div>
+      {footer && (
+        <div className="mt-auto bg-gray-900 border-t border-gray-800">
+          {footer}
+        </div>
+              )}
+
     </div>
   </motion.div>
 );

@@ -31,41 +31,62 @@
 .animate-pulse-subtle {
   animation: pulse-subtle 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
-
 @keyframes glitch {
   0% {
-    text-shadow: 0.05em 0 0 #00fffc, -0.05em -0.025em 0 #fc00ff,
-      0.025em 0.05em 0 #fffc00;
+    clip-path: inset(80% 0 0 0);
+    transform: translate(-2px, 2px);
   }
-  14% {
-    text-shadow: 0.05em 0 0 #00fffc, -0.05em -0.025em 0 #fc00ff,
-      0.025em 0.05em 0 #fffc00;
+  10% {
+    clip-path: inset(10% 0 85% 0);
+    transform: translate(2px, -2px);
   }
-  15% {
-    text-shadow: -0.05em -0.025em 0 #00fffc, 0.025em 0.025em 0 #fc00ff,
-      -0.05em -0.05em 0 #fffc00;
+  20% {
+    clip-path: inset(80% 0 0 0);
+    transform: translate(-2px, 2px);
   }
-  49% {
-    text-shadow: -0.05em -0.025em 0 #00fffc, 0.025em 0.025em 0 #fc00ff,
-      -0.05em -0.05em 0 #fffc00;
+  30% {
+    clip-path: inset(10% 0 85% 0);
+    transform: translate(2px, -2px);
+  }
+  40% {
+    clip-path: inset(50% 0 30% 0);
+    transform: translate(-2px, 2px);
   }
   50% {
-    text-shadow: 0.025em 0.05em 0 #00fffc, 0.05em 0 0 #fc00ff,
-      0 -0.05em 0 #fffc00;
+    clip-path: inset(30% 0 60% 0);
+    transform: translate(2px, -2px);
   }
-  99% {
-    text-shadow: 0.025em 0.05em 0 #00fffc, 0.05em 0 0 #fc00ff,
-      0 -0.05em 0 #fffc00;
+  60% {
+    clip-path: inset(70% 0 10% 0);
+    transform: translate(-2px, 2px);
+  }
+  70% {
+    clip-path: inset(20% 0 70% 0);
+    transform: translate(2px, -2px);
+  }
+  80% {
+    clip-path: inset(40% 0 50% 0);
+    transform: translate(-2px, 2px);
+  }
+  90% {
+    clip-path: inset(60% 0 30% 0);
+    transform: translate(2px, -2px);
   }
   100% {
-    text-shadow: -0.025em 0 0 #00fffc, -0.025em -0.025em 0 #fc00ff,
-      -0.025em -0.05em 0 #fffc00;
+    clip-path: inset(80% 0 0 0);
+    transform: translate(-2px, 2px);
   }
 }
 
-.font-cyber {
-  font-family: 'Orbitron', sans-serif;
-  animation: glitch 5s infinite;
+.bg-glitch {
+  background-image: repeating-linear-gradient(
+    0deg,
+    #000,
+    #000 1px,
+    transparent 1px,
+    transparent 2px
+  );
+  animation: glitch 8s steps(100) infinite;
 }
 
 .font-unbounded {
