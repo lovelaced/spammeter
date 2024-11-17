@@ -89,10 +89,15 @@ export const BlockFeed: React.FC<BlockFeedProps> = ({ chainData }) => {
                   <Sparkles className="ml-1 h-4 w-4 text-[#bb9af7]" />
                 )}
               </span>
-              <span className="text-[#9ab1a9] flex items-center">
-                {block.blockTime?.toFixed(2).padStart(5, '0')}s
+              <span
+                className={`flex items-center ${block.blockTime && block.blockTime < 5
+                    ? 'font-bold text-white'
+                    : 'text-[#9ab1a9]'
+                  }`}
+              >
+                {block.blockTime?.toFixed(2)}s
                 {block.blockTime && block.blockTime < 5 && (
-                  <Zap className="ml-1 h-4 w-4 text-[#ff9e64]" />
+                  <Zap className="ml-1 h-4 w-4 text-[#ffff00]" />
                 )}
               </span>
             </div>

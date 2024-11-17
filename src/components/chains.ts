@@ -108,6 +108,8 @@ export const westendChainsConfig: ChainsConfig = {
   Coretime: { paraId: 1005, displayName: 'Coretime', icon: Zap, color: 'bg-yellow-400' },
   People: { paraId: 1004, displayName: 'People', icon: Contact, color: 'bg-blue-600' },
   YAP2022: { paraId: 2022, displayName: 'YAP2022', icon: Rabbit, color: 'bg-pink-600' },
+  Versi2021: { paraId: 2021, displayName: 'Versi-2021' },
+  Versi2020: { paraId: 2020, displayName: 'Versi-2020' },
 } as const;
 
 // Type for chain names for both networks
