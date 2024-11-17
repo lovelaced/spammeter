@@ -34,6 +34,7 @@ const ChaoticPopupChaosometer = () => {
       weight: number;
     }>
   >([]);
+  
   const [visiblePopups, setVisiblePopups] = useState(['tps', 'blocktime', 'feed', 'leaderboard']);
   const [showHighTPS, setShowHighTPS] = useState(true);
 

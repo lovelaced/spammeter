@@ -7,7 +7,7 @@ interface HighTPSPopupProps {
 
 export const HighTPSPopup: React.FC<HighTPSPopupProps> = ({ chainData }) => {
   const highTPSChains = Object.entries(chainData)
-    .filter(([, data]) => data.tps > 1)
+    .filter(([, data]) => data.tps > 1 && Number.isFinite(data.tps))
     .sort(([, a], [, b]) => b.tps - a.tps);
 
   return (

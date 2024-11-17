@@ -19,7 +19,7 @@ export const BlockFeed: React.FC<BlockFeedProps> = ({ blocks }) => {
   return (
     <div className="w-full h-full overflow-hidden bg-black font-mono text-xs flex flex-col shadow-[0_0_10px_rgba(59,66,97,0.5)]">
       <div className="bg-black text-[#ffffff] p-1 flex items-center justify-between border-b border-[#07ffff]">
-        <span className="font-bold">Realtime Blocks</span>
+        <span className="font-bold">Finalized Blocks</span>
       </div>
       <div className="flex-1 overflow-hidden flex flex-col">
         <div className="grid grid-cols-4 gap-2 text-[#07ffff] border-b border-[#07ffff] p-1">
