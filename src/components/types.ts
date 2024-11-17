@@ -11,7 +11,7 @@ export interface ChainData {
     weight: number;
     tps: number;
     tpsEma: number;
-    recentBlocks: Array<{ extrinsics: number; timestamp: number }>; // Add this line
+    recentBlocks: Array<{ extrinsics: number; timestamp: number, blockNumber: number, blockTime: number, weight: number }>; // Add this line
   }
   
   export interface ChainDataMap {

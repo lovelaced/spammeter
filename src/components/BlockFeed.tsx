@@ -1,19 +1,66 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Sparkles, Zap } from 'lucide-react';
+import { ChainDataMap } from './types'; // Import necessary types
 
 interface Block {
   id: string;
   name: string;
   blockNumber: number;
   extrinsics: number;
-  blockTime: number;
+  blockTime?: number;
+  timestamp: number;
+  weight: number;
 }
 
 interface BlockFeedProps {
-  blocks: Block[];
+  chainData: ChainDataMap;
 }
 
-export const BlockFeed: React.FC<BlockFeedProps> = ({ blocks }) => {
+export const BlockFeed: React.FC<BlockFeedProps> = ({ chainData }) => {
+  const [blocks, setBlocks] = useState<Block[]>([]);
+
+  useEffect(() => {
+    // Collect all recent blocks from each chain's recentBlocks
+    const collectedBlocks = Object.values(chainData).flatMap((chain) =>
+      chain.recentBlocks.map((block) => ({
+        id: `${chain.relay}-${chain.paraId}-${block.timestamp}`,
+        name: chain.name,
+        extrinsics: block.extrinsics,
+        blockTime: block.blockTime,
+        blockNumber: block.blockNumber,
+        timestamp: block.timestamp,
+        weight: block.weight,
+      }))
+    );
+
+    setBlocks((prev) => {
+      // Combine existing blocks and new collected blocks
+      const combinedBlocks = [...prev, ...collectedBlocks];
+
+      // Remove duplicates based on the unique block ID
+      const uniqueBlocksMap = new Map<string, Block>();
+      combinedBlocks.forEach((block) => {
+        uniqueBlocksMap.set(block.id, block);
+      });
+
+      // Convert the Map back to an array
+      const uniqueBlocks = Array.from(uniqueBlocksMap.values());
+
+      // Sort blocks by timestamp in descending order
+      uniqueBlocks.sort((a, b) => b.timestamp - a.timestamp);
+
+      // Filter out blocks older than 1 minute
+      const currentTime = Date.now();
+      const cutoffTimestamp = currentTime - 60 * 1000; // 1 minute ago
+      const prunedBlocks = uniqueBlocks.filter(
+        (block) => block.timestamp >= cutoffTimestamp
+      );
+
+      // Limit to the 100 most recent blocks
+      return prunedBlocks.slice(0, 100);
+    });
+  }, [chainData]);
+
   const MAX_DISPLAYED_BLOCKS = 11;
 
   return (
@@ -44,7 +91,7 @@ export const BlockFeed: React.FC<BlockFeedProps> = ({ blocks }) => {
               </span>
               <span className="text-[#9ab1a9] flex items-center">
                 {block.blockTime?.toFixed(2).padStart(5, '0')}s
-                {block.blockTime < 5 && (
+                {block.blockTime && block.blockTime < 5 && (
                   <Zap className="ml-1 h-4 w-4 text-[#ff9e64]" />
                 )}
               </span>

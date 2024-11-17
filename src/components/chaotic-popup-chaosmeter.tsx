@@ -196,7 +196,7 @@ const ChaoticPopupChaosometer = () => {
                   className="col-span-12 sm:col-span-6 lg:col-span-7 w-full"
                 >
                   <div className="h-[325px]">
-                    <BlockFeed blocks={blocks} />
+                    <BlockFeed chainData={chainData} />
                   </div>
                 </PopupWindow>
               </React.Fragment>

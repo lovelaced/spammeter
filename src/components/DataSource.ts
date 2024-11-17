@@ -13,7 +13,7 @@ export abstract class DataSource {
   };
 
   private readonly TARGET_WINDOW_SIZE = 30000; // 30 seconds in milliseconds
-  private readonly ALPHA = 0.1; // EMA smoothing factor
+  private readonly ALPHA = 0.3; // EMA smoothing factor
   private readonly MIN_DATA_POINTS = 10; // Minimum number of data points for high confidence
 
   abstract start(): void;
@@ -48,8 +48,24 @@ export abstract class DataSource {
 
     const updatedRecentBlocks = [
       ...(existingChain?.recentBlocks || []),
-      { extrinsics: update.extrinsics_num, timestamp: update.timestamp, blockTime: update.block_time_seconds }
+      {
+        chainId: chainId,
+        extrinsics: update.extrinsics_num,
+        timestamp: update.timestamp,
+        blockTime: update.block_time_seconds ?? 0,
+        blockNumber: update.block_number,      // Include blockNumber
+        weight: update.total_proof_size,       // Include weight
+      },
     ];
+
+    // Optionally, prune old blocks to manage memory
+    const currentTime = Date.now();
+    const cutoffTime = currentTime - this.TARGET_WINDOW_SIZE*2; // 60 seconds ago
+    const prunedRecentBlocks = updatedRecentBlocks.filter(
+      (block) => block.timestamp >= cutoffTime
+    );
+
+    console.log(updatedRecentBlocks.length, prunedRecentBlocks.length);
 
     const { tps: chainTps } = this.calculateTps(updatedRecentBlocks);
     const chainTpsEma = this.calculateEma(existingChain?.tpsEma || chainTps, chainTps);
@@ -68,7 +84,7 @@ export abstract class DataSource {
       weight: update.total_proof_size,
       tps: chainTps,
       tpsEma: chainTpsEma,
-      recentBlocks: updatedRecentBlocks
+      recentBlocks: prunedRecentBlocks
     };
 
     const updatedChainData: ChainDataMap = {
