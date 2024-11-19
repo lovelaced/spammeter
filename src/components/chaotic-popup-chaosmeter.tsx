@@ -17,13 +17,14 @@ import { ChainData } from './types';
 import { kusamaChainsConfig } from './chains';
 import { Dropdown } from './Dropdown';
 import SpamButton from './SpamButton';
+import Leaderboard from './Leaderboard';
 
 
 const ChaoticPopupChaosometer = () => {
   const [selectedChain, setSelectedChain] = useState<string>(''); // Manage the selected chain state
   const [useMockData] = useState(false)
   const dataSource = useMemo(() => useMockData ? new TestnetDataSource() : new RealDataSource(), [useMockData])
-  const { chainData, totalTps } = useDataSource(dataSource);
+  const { chainData, totalTps, confidenceMetric } = useDataSource(dataSource);
   const [blocks, setBlocks] = useState<
     Array<{
       id: string;
@@ -38,6 +39,20 @@ const ChaoticPopupChaosometer = () => {
 
   const [visiblePopups, setVisiblePopups] = useState(['tps', 'blocktime', 'feed', 'leaderboard']);
   const [showHighTPS, setShowHighTPS] = useState(true);
+
+  // Calculate and update max TPS for each chain
+  useEffect(() => {
+    console.log(confidenceMetric)
+    if (confidenceMetric >= 0.95) { // Only update if confidence is high
+      const updatedChainMaxTps = { ...chainMaxTps };
+      Object.values(chainData).forEach((data) => {
+        if (!updatedChainMaxTps[data.name] || data.tps > updatedChainMaxTps[data.name]) {
+          updatedChainMaxTps[data.name] = data.tps; // Update max TPS for the chain
+        }
+      });
+      setChainMaxTps(updatedChainMaxTps);
+    }
+  }, [chainData, confidenceMetric]); // Only re-run when `chainData` or `confidenceMetric` changes
 
   useEffect(() => {
     const newBlocks = Object.values(chainData).map(chain => ({
@@ -81,19 +96,14 @@ const ChaoticPopupChaosometer = () => {
   }, [chainData]);
 
   //const toggleDataSource = () => {
- //   setUseMockData(prev => !prev)
- // }
+  //   setUseMockData(prev => !prev)
+  // }
 
   const closePopup = (id: string) => {
     setVisiblePopups(prev => prev.filter(p => p !== id));
   };
 
-  const leaderboard = useMemo(() => {
-    return Object.values(chainData)
-      .filter((chain) => !isNaN(chain.tps) && isFinite(chain.tps)) // filter out NaN or Infinity
-      .sort((a, b) => b.tps - a.tps)
-      .slice(0, 10);
-  }, [chainData]);
+  const [chainMaxTps, setChainMaxTps] = useState<{ [key: string]: number }>({}); // State to track max TPS per chain
 
   const sendTweet = () => {
     const tweetText = `Just saw ${totalTps.toFixed(2)} TPS during the @Polkadot spammening! #expectchaos`;
@@ -117,44 +127,44 @@ const ChaoticPopupChaosometer = () => {
   };
 
   return (
-<div className="min-h-screen bg-white p-4 font-mono text-black relative overflow-hidden">
-  <div className="max-w-6xl mx-auto relative">
-    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center pb-4">
-      <div className="flex items-center space-x-2">
-        <img
-          src="/Polkadot_Token_Pink.svg"
-          alt="Polkadot Logo"
-          className="w-6 h-6 sm:w-9 sm:h-9"
-        />
-        <h1 className="text-xl sm:text-2xl md:text-4xl font-extrabold">
-          <GlitchText text="SPAMMENING" tps={totalTps} />
-        </h1>
-      </div>
-      {/* Container for Dropdown and Buttons */}
-      <div className="flex flex-col sm:flex-row sm:items-start sm:space-x-4 pt-4 sm:pt-0">
-        {/* Dropdown */}
-        <div className="mb-2 sm:mb-0">
-          <Dropdown selectedChain={selectedChain} setSelectedChain={setSelectedChain} />
-        </div>
-        {/* Buttons Container */}
-        <div className="flex space-x-2">
-          {/* SpamButton with SpamStatus */}
-          <div className="flex flex-col items-start space-y-1">
-            <SpamButton rpcUrl={selectedChain} disabled={!selectedChain} />
+    <div className="min-h-screen bg-white p-4 font-mono text-black relative overflow-hidden">
+      <div className="max-w-6xl mx-auto relative">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center pb-4">
+          <div className="flex items-center space-x-2">
+            <img
+              src="/Polkadot_Token_Pink.svg"
+              alt="Polkadot Logo"
+              className="w-6 h-6 sm:w-9 sm:h-9"
+            />
+            <h1 className="text-xl sm:text-2xl md:text-4xl font-extrabold">
+              <GlitchText text="SPAMMENING" tps={totalTps} />
+            </h1>
           </div>
-          {/* Send Tweet Button */}
-          <Button
-            onClick={sendTweet}
-            className="h-[38px] bg-black text-white border-4 border-black px-4 py-2 text-sm font-bold hover:bg-white hover:text-black transition-colors active:shadow-none relative overflow-hidden group"
-          >
-            <span className="relative z-10 flex items-center justify-center">
-              SEND TWEET
-            </span>
-            <span className="absolute inset-0 bg-gradient-to-r from-[#7916F3] to-[#ea4070] opacity-0 group-hover:opacity-100 transition-opacity" />
-          </Button>
+          {/* Container for Dropdown and Buttons */}
+          <div className="flex flex-col sm:flex-row sm:items-start sm:space-x-4 pt-4 sm:pt-0">
+            {/* Dropdown */}
+            <div className="mb-2 sm:mb-0">
+              <Dropdown selectedChain={selectedChain} setSelectedChain={setSelectedChain} />
+            </div>
+            {/* Buttons Container */}
+            <div className="flex space-x-2">
+              {/* SpamButton with SpamStatus */}
+              <div className="flex flex-col items-start space-y-1">
+                <SpamButton rpcUrl={selectedChain} disabled={!selectedChain} />
+              </div>
+              {/* Send Tweet Button */}
+              <Button
+                onClick={sendTweet}
+                className="h-[38px] bg-black text-white border-4 border-black px-4 py-2 text-sm font-bold hover:bg-white hover:text-black transition-colors active:shadow-none relative overflow-hidden group"
+              >
+                <span className="relative z-10 flex items-center justify-center">
+                  SEND TWEET
+                </span>
+                <span className="absolute inset-0 bg-gradient-to-r from-[#7916F3] to-[#ea4070] opacity-0 group-hover:opacity-100 transition-opacity" />
+              </Button>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
 
         <div className="grid grid-cols-12 gap-4 mb-4">
           <AnimatePresence>
@@ -217,40 +227,11 @@ const ChaoticPopupChaosometer = () => {
                   onClose={() => closePopup('leaderboard')}
                   className="col-span-12 sm:col-span-6 lg:col-span-5 w-full"
                 >
-                  <div className="w-full h-full space-y-1 bg-white p-2">
-                    {/* Updated Header */}
-                    <div className="grid grid-cols-12 gap-2 text-xs font-bold border-b-2 border-black pb-1 mb-2">
-                      <span className="col-span-1">#</span>
-                      <span className="col-span-4">Chain</span>
-                      <span className="col-span-3">TPS</span>
-
-                      {/* Responsive Text for "Total Transactions" */}
-                      <span className="col-span-4">
-                        <span className="hidden sm:inline">Total Transactions</span>
-                        <span className="inline sm:hidden">Total Txns</span>
-                      </span>
-                    </div>
-                    {/* Data Rows */}
-                    {leaderboard.map((data, index) => (
-                      <div
-                        key={data.name}
-                        className="grid grid-cols-12 gap-2 items-center text-xs border-b border-dotted border-primary-foreground/20 pb-1"
-                      >
-                        <span className="col-span-1">{index + 1}.</span>
-                        <span className="col-span-4 flex items-center gap-1">
-                          {renderChainName(data)}
-                        </span>
-                        <span className="col-span-3 font-bold">
-                          {data.tps === 0 || !isFinite(data.tps) || isNaN(data.tps)
-                            ? '--'
-                            : data.tps.toFixed(2)}
-                        </span>
-                        <span className="col-span-4">
-                          {data.accumulatedExtrinsics.toLocaleString()}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
+                 <Leaderboard
+                    chainData={chainData}
+                    chainMaxTps={chainMaxTps}
+                    renderChainName={renderChainName}
+                  />
                 </PopupWindow>
               </React.Fragment>
             )}

@@ -93,7 +93,7 @@ export function SpamButton({ rpcUrl, disabled }: SpamButtonProps) {
               // Update progress based on worker progress
               workerProgresses[i] = workerProgress; // workerProgress is between 0 and 100
               const totalWorkerProgress = workerProgresses.reduce((sum, curr) => sum + curr, 0) / numWorkers;
-              // Since signing is 50% of total progress
+              // We'll just say signing is 50% of total progress
               const totalProgress = (totalWorkerProgress / 100) * 50; // totalProgress between 0 and 50
               setProgress(totalProgress);
               return;

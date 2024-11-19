@@ -14,7 +14,7 @@ export abstract class DataSource {
 
   private readonly TARGET_WINDOW_SIZE = 30000; // 30 seconds in milliseconds
   private readonly ALPHA = 0.3; // EMA smoothing factor
-  private readonly MIN_DATA_POINTS = 10; // Minimum number of data points for high confidence
+  private readonly MIN_DATA_POINTS = 100; // Minimum number of data points for high confidence
 
   abstract start(): void;
   abstract stop(): void;
@@ -94,6 +94,7 @@ export abstract class DataSource {
     const totalTpsEma = this.calculateEma(this.state.totalTpsEma || totalTps, totalTps);
     const dataPoints = this.state.dataPoints + 1;
     const confidenceMetric = this.calculateConfidenceMetric(globalTimeWindow, dataPoints);
+    console.log(confidenceMetric)
 
     this.state = { 
       chainData: updatedChainData, 
@@ -159,6 +160,6 @@ export abstract class DataSource {
   }
 
   isHighConfidence(): boolean {
-    return this.state.confidenceMetric >= 0.8;
+    return this.state.confidenceMetric >= 0.95;
   }
 }

@@ -45,7 +45,7 @@ export const BlocktimeHeatmap: React.FC<BlocktimeHeatmapProps> = ({ chainData })
   };
 
   const getColor = (blockTime: number): string => {
-    if (blockTime < 5.5) return '#f2ff0d'; // Yellow
+    if (blockTime <= 4 ) return '#f2ff0d'; // Yellow
     if (blockTime < 12) return '#ffffff'; // White
     if (blockTime < 13) return '#999999'; // Light Gray
     if (blockTime < 19) return '#666666'; // Dark Gray
@@ -53,7 +53,7 @@ export const BlocktimeHeatmap: React.FC<BlocktimeHeatmapProps> = ({ chainData })
   };
 
   const getSize = (blockTime: number): string => {
-    if (blockTime < 4) return 'w-2 h-2 sm:w-3 sm:h-3';
+    if (blockTime <= 4) return 'w-2 h-2 sm:w-3 sm:h-3';
     if (blockTime < 7) return 'w-3 h-3 sm:w-4 sm:h-4';
     if (blockTime < 13) return 'w-4 h-4 sm:w-5 sm:h-5';
     return 'w-5 h-5 sm:w-6 sm:h-6';
@@ -102,7 +102,7 @@ export const BlocktimeHeatmap: React.FC<BlocktimeHeatmapProps> = ({ chainData })
                           opacity: 1,
                         }}
                       />
-                      {data.blockTime < 5.5 && (
+                      {data.blockTime <= 4 && (
                         <div className={`absolute inset-0 ${getSize(data.blockTime)} border-2 border-black animate-[pulse_0.3s_cubic-bezier(0.4,0,0.6,1)_infinite]`} />
                       )}
                     </div>
