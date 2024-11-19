@@ -117,35 +117,44 @@ const ChaoticPopupChaosometer = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white p-4 font-mono text-black relative overflow-hidden">
-      <div className="max-w-6xl mx-auto relative">
-        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center pb-4">
-          <div className="flex items-center space-x-2">
-            <img
-              src="/Polkadot_Token_Pink.svg"
-              alt="Polkadot Logo"
-              className="w-6 h-6 sm:w-9 sm:h-9"
-            />
-            <h1 className="text-xl sm:text-2xl md:text-4xl font-extrabold">
-              <GlitchText text="SPAMMENING" tps={totalTps} />
-            </h1>
-          </div>
-          <div className="flex flex-col space-y-2 sm:flex-row sm:items-center sm:space-x-4 pt-2">
-            <div className="flex space-x-2">
-            <Dropdown selectedChain={selectedChain} setSelectedChain={setSelectedChain} />
-              <SpamButton rpcUrl={selectedChain} />
-              <Button
-                onClick={sendTweet}
-                className="h-[38px] bg-black text-white border-4 border-black px-4 py-2 text-sm font-bold hover:bg-white hover:text-black transition-colors active:shadow-none relative overflow-hidden group"
-              >
-                <span className="relative z-10 flex items-center justify-center">
-                  SEND TWEET
-                </span>
-                <span className="absolute inset-0 bg-gradient-to-r from-[#7916F3] to-[#ea4070] opacity-0 group-hover:opacity-100 transition-opacity" />
-              </Button>
-            </div>
-          </div>
+<div className="min-h-screen bg-white p-4 font-mono text-black relative overflow-hidden">
+  <div className="max-w-6xl mx-auto relative">
+    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center pb-4">
+      <div className="flex items-center space-x-2">
+        <img
+          src="/Polkadot_Token_Pink.svg"
+          alt="Polkadot Logo"
+          className="w-6 h-6 sm:w-9 sm:h-9"
+        />
+        <h1 className="text-xl sm:text-2xl md:text-4xl font-extrabold">
+          <GlitchText text="SPAMMENING" tps={totalTps} />
+        </h1>
+      </div>
+      {/* Container for Dropdown and Buttons */}
+      <div className="flex flex-col sm:flex-row sm:items-start sm:space-x-4 pt-4 sm:pt-0">
+        {/* Dropdown */}
+        <div className="mb-2 sm:mb-0">
+          <Dropdown selectedChain={selectedChain} setSelectedChain={setSelectedChain} />
         </div>
+        {/* Buttons Container */}
+        <div className="flex space-x-2">
+          {/* SpamButton with SpamStatus */}
+          <div className="flex flex-col items-start space-y-1">
+            <SpamButton rpcUrl={selectedChain} disabled={!selectedChain} />
+          </div>
+          {/* Send Tweet Button */}
+          <Button
+            onClick={sendTweet}
+            className="h-[38px] bg-black text-white border-4 border-black px-4 py-2 text-sm font-bold hover:bg-white hover:text-black transition-colors active:shadow-none relative overflow-hidden group"
+          >
+            <span className="relative z-10 flex items-center justify-center">
+              SEND TWEET
+            </span>
+            <span className="absolute inset-0 bg-gradient-to-r from-[#7916F3] to-[#ea4070] opacity-0 group-hover:opacity-100 transition-opacity" />
+          </Button>
+        </div>
+      </div>
+    </div>
 
         <div className="grid grid-cols-12 gap-4 mb-4">
           <AnimatePresence>

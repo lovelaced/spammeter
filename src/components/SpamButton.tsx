@@ -1,13 +1,18 @@
-'use client'
+'use client';
 
 import { useState, useEffect } from 'react';
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
 
-const LIMIT = 10; // Number of Receiver accounts
+interface SpamButtonProps {
+  rpcUrl: string;
+  disabled: boolean;
+}
 
-export function SpamButton({ rpcUrl }: { rpcUrl: string }) {
+const LIMIT = 10;
+
+export function SpamButton({ rpcUrl, disabled }: SpamButtonProps) {
   const [status, setStatus] = useState('idle');
   const [progress, setProgress] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
@@ -162,7 +167,7 @@ export function SpamButton({ rpcUrl }: { rpcUrl: string }) {
     <div className="w-80 flex flex-col items-start space-y-2">
       <Button
         onClick={runTransfers}
-        disabled={isRunning}
+        disabled={disabled || isRunning} // Disable if no chain is selected or if running
         className="w-full h-[38px] bg-black text-white border-4 border-black px-4 py-2 text-sm font-bold hover:bg-white hover:text-black transition-colors shadow-md relative overflow-hidden group"
       >
         <span className="relative z-10 flex items-center justify-center">
@@ -171,6 +176,8 @@ export function SpamButton({ rpcUrl }: { rpcUrl: string }) {
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               Running spam program...
             </>
+          ) : disabled ? (
+            '<-- Select a chain to spam' // Message when the button is disabled
           ) : (
             'SPAM NOW'
           )}
@@ -182,6 +189,7 @@ export function SpamButton({ rpcUrl }: { rpcUrl: string }) {
     </div>
   );
 }
+
 
 function SpamStatus({ status, progress }: { status: string; progress: number }) {
   return (

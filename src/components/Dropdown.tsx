@@ -66,7 +66,7 @@ export function Dropdown({ selectedChain, setSelectedChain }: DropdownProps) {
               {selectedChainConfig.displayName}
             </>
           ) : (
-            "Select Chain..."
+            "Select chain..."
           )}
         </span>
         <ChevronDown className="h-4 w-4 shrink-0 ml-2" />
