@@ -65,8 +65,6 @@ export abstract class DataSource {
       (block) => block.timestamp >= cutoffTime
     );
 
-    console.log(updatedRecentBlocks.length, prunedRecentBlocks.length);
-
     const { tps: chainTps } = this.calculateTps(updatedRecentBlocks);
     const chainTpsEma = this.calculateEma(existingChain?.tpsEma || chainTps, chainTps);
 

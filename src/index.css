@@ -16,6 +16,11 @@
   --text-popover-foreground: #4ade80;
 }
 
+::selection {
+  background-color: #ea4071;
+  color: white; /* This sets the text color when selected. Adjust as needed. */
+}
+
 @keyframes pulse-subtle {
   0%, 100% {
     opacity: 1;

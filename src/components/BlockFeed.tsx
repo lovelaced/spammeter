@@ -72,7 +72,10 @@ export const BlockFeed: React.FC<BlockFeedProps> = ({ chainData }) => {
         <div className="grid grid-cols-4 gap-2 text-[#07ffff] border-b border-[#07ffff] p-1">
           <span>Block #</span>
           <span>Chain</span>
-          <span>Transactions</span>
+          <span>
+            <span className="hidden sm:inline">Transactions</span>
+            <span className="inline sm:hidden">Txns</span>
+          </span>
           <span>Blocktime</span>
         </div>
         <div className="flex-1 overflow-y-auto">
@@ -91,13 +94,13 @@ export const BlockFeed: React.FC<BlockFeedProps> = ({ chainData }) => {
               </span>
               <span
                 className={`flex items-center ${block.blockTime && block.blockTime < 5
-                    ? 'font-bold text-white'
-                    : 'text-[#9ab1a9]'
+                  ? 'font-bold text-white'
+                  : 'text-[#9ab1a9]'
                   }`}
               >
                 {block.blockTime?.toFixed(2)}s
                 {block.blockTime && block.blockTime < 5 && (
-                  <Zap className="ml-1 h-4 w-4 text-[#ffff00]" />
+                  <Zap className="ml-1 h-4 w-4 text-[#f2ff0d]" />
                 )}
               </span>
             </div>

@@ -10,17 +10,18 @@ import { PopupWindow } from './PopupWindow';
 import { GlitchText } from './GlitchText';
 import { BlockchainVisualizer } from './BlockchainVisualizer';
 import { BlocktimeHeatmap } from './BlocktimeHeatmap';
-import { DataSourceSwitch } from './DataSourceSwitch';
 import { BlockFeed } from './BlockFeed';
 import { HighTPSPopup } from './HighTPSPopup';
 import { TPSMeter } from './TpsMeter';
 import { ChainData } from './types';
-import { westendChainsConfig } from './chains';
+import { kusamaChainsConfig } from './chains';
+import { Dropdown } from './Dropdown';
 import SpamButton from './SpamButton';
 
 
 const ChaoticPopupChaosometer = () => {
-  const [useMockData, setUseMockData] = useState(true)
+  const [selectedChain, setSelectedChain] = useState<string>(''); // Manage the selected chain state
+  const [useMockData] = useState(false)
   const dataSource = useMemo(() => useMockData ? new TestnetDataSource() : new RealDataSource(), [useMockData])
   const { chainData, totalTps } = useDataSource(dataSource);
   const [blocks, setBlocks] = useState<
@@ -34,7 +35,7 @@ const ChaoticPopupChaosometer = () => {
       weight: number;
     }>
   >([]);
-  
+
   const [visiblePopups, setVisiblePopups] = useState(['tps', 'blocktime', 'feed', 'leaderboard']);
   const [showHighTPS, setShowHighTPS] = useState(true);
 
@@ -79,9 +80,9 @@ const ChaoticPopupChaosometer = () => {
     setShowHighTPS(true);
   }, [chainData]);
 
-  const toggleDataSource = () => {
-    setUseMockData(prev => !prev)
-  }
+  //const toggleDataSource = () => {
+ //   setUseMockData(prev => !prev)
+ // }
 
   const closePopup = (id: string) => {
     setVisiblePopups(prev => prev.filter(p => p !== id));
@@ -101,19 +102,19 @@ const ChaoticPopupChaosometer = () => {
   };
 
   const renderChainName = (chain: ChainData) => {
-    const chainConfig = Object.values(westendChainsConfig).find(c => c.paraId === chain.paraId)
+    const chainConfig = Object.values(kusamaChainsConfig).find(c => c.paraId === chain.paraId);
 
     if (chainConfig && chainConfig.icon) {
-      const Icon = chainConfig.icon
+      const Icon = chainConfig.icon;
       return (
-        <div className={`p-1 rounded-full ${chainConfig.color}`}>
+        <div className="p-1 rounded-full" style={{ backgroundColor: chainConfig.color }}>
           <Icon className="w-4 h-4 text-white" aria-label={chain.name} />
         </div>
-      )
+      );
     }
 
-    return <span className="truncate">{chain.name}</span>
-  }
+    return <span className="truncate">{chain.name}</span>;
+  };
 
   return (
     <div className="min-h-screen bg-white p-4 font-mono text-black relative overflow-hidden">
@@ -129,11 +130,10 @@ const ChaoticPopupChaosometer = () => {
               <GlitchText text="SPAMMENING" tps={totalTps} />
             </h1>
           </div>
-
           <div className="flex flex-col space-y-2 sm:flex-row sm:items-center sm:space-x-4 pt-2">
-            <DataSourceSwitch useMockData={useMockData} onToggle={toggleDataSource} />
             <div className="flex space-x-2">
-              <SpamButton />
+            <Dropdown selectedChain={selectedChain} setSelectedChain={setSelectedChain} />
+              <SpamButton rpcUrl={selectedChain} />
               <Button
                 onClick={sendTweet}
                 className="h-[38px] bg-black text-white border-4 border-black px-4 py-2 text-sm font-bold hover:bg-white hover:text-black transition-colors active:shadow-none relative overflow-hidden group"
@@ -206,14 +206,22 @@ const ChaoticPopupChaosometer = () => {
                 <PopupWindow
                   title="TPS LEADERBOARD"
                   onClose={() => closePopup('leaderboard')}
-                  className="col-span-12  sm:col-span-6 lg:col-span-5 w-full"
+                  className="col-span-12 sm:col-span-6 lg:col-span-5 w-full"
                 >
                   <div className="w-full h-full space-y-1 bg-white p-2">
-                    <div className="grid grid-cols-3 gap-2 text-xs font-bold border-b-2 border-black pb-1 mb-2">
-                      <span>Chain</span>
-                      <span>TPS</span>
-                      <span>Total Transactions</span>
+                    {/* Updated Header */}
+                    <div className="grid grid-cols-12 gap-2 text-xs font-bold border-b-2 border-black pb-1 mb-2">
+                      <span className="col-span-1">#</span>
+                      <span className="col-span-4">Chain</span>
+                      <span className="col-span-3">TPS</span>
+
+                      {/* Responsive Text for "Total Transactions" */}
+                      <span className="col-span-4">
+                        <span className="hidden sm:inline">Total Transactions</span>
+                        <span className="inline sm:hidden">Total Txns</span>
+                      </span>
                     </div>
+                    {/* Data Rows */}
                     {leaderboard.map((data, index) => (
                       <div
                         key={data.name}
@@ -224,15 +232,20 @@ const ChaoticPopupChaosometer = () => {
                           {renderChainName(data)}
                         </span>
                         <span className="col-span-3 font-bold">
-                          {data.tps === 0 || !isFinite(data.tps) || isNaN(data.tps) ? '--' : data.tps.toFixed(2)}
+                          {data.tps === 0 || !isFinite(data.tps) || isNaN(data.tps)
+                            ? '--'
+                            : data.tps.toFixed(2)}
                         </span>
-                        <span className="col-span-4">{data.accumulatedExtrinsics.toLocaleString()}</span>
+                        <span className="col-span-4">
+                          {data.accumulatedExtrinsics.toLocaleString()}
+                        </span>
                       </div>
                     ))}
                   </div>
                 </PopupWindow>
               </React.Fragment>
             )}
+
           </AnimatePresence>
         </div>
 

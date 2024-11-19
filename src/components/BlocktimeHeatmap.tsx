@@ -12,7 +12,7 @@ const BlocktimeSummary: React.FC<{ summary: Record<string, number> }> = ({ summa
         {Object.entries(summary).map(([blocktime, count]) => {
           // Use colors inspired by the heatmap component
           const color =
-            blocktime === '2s' ? '#ffff00' : // Yellow for fast blocktimes
+            blocktime === '2s' ? '#f2ff0d' : // Yellow for fast blocktimes
             blocktime === '6s' ? '#ffffff' : // White for moderate blocktimes
             '#c8c8c8'; // Gray for slower blocktimes
 
@@ -45,7 +45,7 @@ export const BlocktimeHeatmap: React.FC<BlocktimeHeatmapProps> = ({ chainData })
   };
 
   const getColor = (blockTime: number): string => {
-    if (blockTime < 5.5) return '#ffff00'; // Yellow
+    if (blockTime < 5.5) return '#f2ff0d'; // Yellow
     if (blockTime < 12) return '#ffffff'; // White
     if (blockTime < 13) return '#999999'; // Light Gray
     if (blockTime < 19) return '#666666'; // Dark Gray

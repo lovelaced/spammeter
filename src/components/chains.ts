@@ -11,6 +11,7 @@ export type ChainConfig = {
   displayName: string;
   icon?: LucideIcon;
   color?: string;
+  rpcUrl?: string;
 };
 
 // Create a central configuration object for chains
@@ -61,6 +62,7 @@ export const polkadotChainsConfig: ChainsConfig = {
 } as const;
 
 export const kusamaChainsConfig: ChainsConfig = {
+  YAP3359: { paraId: 3359, displayName: 'YAP3359', icon: Zap, color: '#FF2670', rpcUrl: "wss://kusama-yap-3359.parity-chains.parity.io" }, // Pink
   Kusama: { paraId: 2, displayName: 'Kusama' },
   AssetHub: { paraId: 1000, displayName: 'AssetHub' },
   BridgeHub: { paraId: 1002, displayName: 'BridgeHub' },
@@ -101,16 +103,17 @@ export const kusamaChainsConfig: ChainsConfig = {
 } as const;
 
 export const westendChainsConfig: ChainsConfig = {
-  Westend: { paraId: 3, displayName: 'Westend', icon: ArrowsUpFromLine, color: 'bg-purple-600' },
-  Assethub: { paraId: 1000, displayName: 'Assethub', icon: Bitcoin, color: 'bg-orange-500' },
-  Bridgehub: { paraId: 1002, displayName: 'Bridgehub', icon: Mail, color: 'bg-red-600' },
-  Collectives: { paraId: 1001, displayName: 'Collectives', icon: Power, color: 'bg-green-600' },
-  Coretime: { paraId: 1005, displayName: 'Coretime', icon: Zap, color: 'bg-yellow-400' },
-  People: { paraId: 1004, displayName: 'People', icon: Contact, color: 'bg-blue-600' },
-  YAP2022: { paraId: 2022, displayName: 'YAP2022', icon: Rabbit, color: 'bg-pink-600' },
+  Westend: { paraId: 3, displayName: 'Westend', icon: ArrowsUpFromLine, color: '#FF2670' }, // Pink
+  Assethub: { paraId: 1000, displayName: 'Assethub', icon: Bitcoin, color: '#7916F3' }, // Purple
+  Bridgehub: { paraId: 1002, displayName: 'Bridgehub', icon: Mail, color: '#3316F3' }, // Dark Blue
+  Collectives: { paraId: 1001, displayName: 'Collectives', icon: Power, color: '#FF7926' }, // Orange
+  Coretime: { paraId: 1005, displayName: 'Coretime', icon: Zap, color: '#2BD900' }, // Green
+  People: { paraId: 1004, displayName: 'People', icon: Contact, color: '#FACC14' }, // Yellow
+  YAP2022: { paraId: 2022, displayName: 'YAP2022', icon: Rabbit, color: '#FF262A' }, // Red
   Versi2021: { paraId: 2021, displayName: 'Versi-2021' },
   Versi2020: { paraId: 2020, displayName: 'Versi-2020' },
 } as const;
+
 
 // Type for chain names for both networks
 export type PolkadotChainName = keyof typeof polkadotChainsConfig;
