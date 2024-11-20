@@ -42,7 +42,6 @@ const ChaoticPopupChaosometer = () => {
 
   // Calculate and update max TPS for each chain
   useEffect(() => {
-    console.log(confidenceMetric)
     if (confidenceMetric >= 0.95) { // Only update if confidence is high
       const updatedChainMaxTps = { ...chainMaxTps };
       Object.values(chainData).forEach((data) => {

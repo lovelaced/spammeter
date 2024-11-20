@@ -164,11 +164,11 @@ export function SpamButton({ rpcUrl, disabled }: SpamButtonProps) {
   };
 
   return (
-    <div className="w-full flex flex-col items-start space-y-2">
+    <div className="w-80 flex flex-col items-start space-y-2">
       <Button
         onClick={runTransfers}
-        disabled={disabled || isRunning}
-        className="w-full sm:w-auto h-[38px] bg-black text-white border-4 border-black px-4 py-2 text-sm font-bold hover:bg-white hover:text-black transition-colors shadow-md relative overflow-hidden group"
+        disabled={disabled || isRunning} // Disable if no chain is selected or if running
+        className="w-full h-[38px] bg-black text-white border-4 border-black px-4 py-2 text-sm font-bold hover:bg-white hover:text-black transition-colors shadow-md relative overflow-hidden group"
       >
         <span className="relative z-10 flex items-center justify-center">
           {isRunning ? (
@@ -177,6 +177,7 @@ export function SpamButton({ rpcUrl, disabled }: SpamButtonProps) {
               Running spam program...
             </>
           ) : disabled ? (
+            // show different icons based on screen size
             <span className="flex items-center">
               <span className="hidden sm:block">&lt;-- Select a chain to spam</span>
               <span className="block sm:hidden flex items-center">
