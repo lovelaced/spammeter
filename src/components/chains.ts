@@ -62,10 +62,10 @@ export const polkadotChainsConfig: ChainsConfig = {
 } as const;
 
 export const kusamaChainsConfig: ChainsConfig = {
-  YAP3363: { paraId: 3363, displayName: 'YAP3363', icon: Bird, color: '#3316F3', rpcUrl: "wss://kusama-yap-3363.parity-chains.parity.io" }, // Pink
-  YAP3362: { paraId: 3362, displayName: 'YAP3362', icon: Snail, color: '#2BD900', rpcUrl: "wss://kusama-yap-3362.parity-chains.parity.io" }, // Pink
-  YAP3361: { paraId: 3361, displayName: 'YAP3361', icon: Cat, color: '#FACC14', rpcUrl: "wss://kusama-yap-3361.parity-chains.parity.io" }, // Pink
-  YAP3360: { paraId: 3360, displayName: 'YAP3360', icon: Beer, color: '#FF7926', rpcUrl: "wss://kusama-yap-3360.parity-chains.parity.io" }, // Pink
+  YAP3363: { paraId: 3363, displayName: 'YAP3363', icon: Bird, color: '#3316F3', rpcUrl: "wss://kusama-yap-3363.parity-chains.parity.io" }, // Blue
+  YAP3362: { paraId: 3362, displayName: 'YAP3362', icon: Snail, color: '#2BD900', rpcUrl: "wss://kusama-yap-3362.parity-chains.parity.io" }, // Green
+  YAP3361: { paraId: 3361, displayName: 'YAP3361', icon: Cat, color: '#FACC14', rpcUrl: "wss://kusama-yap-3361.parity-chains.parity.io" }, // Yellow
+  YAP3360: { paraId: 3360, displayName: 'YAP3360', icon: Beer, color: '#FF7926', rpcUrl: "wss://kusama-yap-3360.parity-chains.parity.io" }, // Orange
   YAP3359: { paraId: 3359, displayName: 'YAP3359', icon: Rabbit, color: '#FF2670', rpcUrl: "wss://kusama-yap-3359.parity-chains.parity.io" }, // Pink
   Kusama: { paraId: 2, displayName: 'Kusama' },
   AssetHub: { paraId: 1000, displayName: 'AssetHub' },

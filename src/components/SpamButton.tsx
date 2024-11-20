@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { Button } from '@/components/ui/button';
-import { Loader2 } from 'lucide-react';
+import { Loader2, ArrowUp } from 'lucide-react';
 
 interface SpamButtonProps {
   rpcUrl: string;
@@ -164,11 +164,11 @@ export function SpamButton({ rpcUrl, disabled }: SpamButtonProps) {
   };
 
   return (
-    <div className="w-80 flex flex-col items-start space-y-2">
+    <div className="w-full flex flex-col items-start space-y-2">
       <Button
         onClick={runTransfers}
-        disabled={disabled || isRunning} // Disable if no chain is selected or if running
-        className="w-full h-[38px] bg-black text-white border-4 border-black px-4 py-2 text-sm font-bold hover:bg-white hover:text-black transition-colors shadow-md relative overflow-hidden group"
+        disabled={disabled || isRunning}
+        className="w-full sm:w-auto h-[38px] bg-black text-white border-4 border-black px-4 py-2 text-sm font-bold hover:bg-white hover:text-black transition-colors shadow-md relative overflow-hidden group"
       >
         <span className="relative z-10 flex items-center justify-center">
           {isRunning ? (
@@ -177,7 +177,13 @@ export function SpamButton({ rpcUrl, disabled }: SpamButtonProps) {
               Running spam program...
             </>
           ) : disabled ? (
-            '<-- Select a chain to spam' // Message when the button is disabled
+            <span className="flex items-center">
+              <span className="hidden sm:block">&lt;-- Select a chain to spam</span>
+              <span className="block sm:hidden flex items-center">
+                <ArrowUp className="mr-2 h-4 w-4" />
+                Select a chain to spam
+              </span>
+            </span>
           ) : (
             'SPAM NOW'
           )}
@@ -189,7 +195,6 @@ export function SpamButton({ rpcUrl, disabled }: SpamButtonProps) {
     </div>
   );
 }
-
 
 function SpamStatus({ status, progress }: { status: string; progress: number }) {
   return (

@@ -1,5 +1,3 @@
-// Leaderboard.tsx
-
 import React from 'react';
 import { ChainData } from './types'; // Adjust the import path to your ChainData type
 
@@ -39,10 +37,12 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ chainData, chainMaxTps, rende
             {renderChainName(data)}
           </span>
           <span className="col-span-2 font-bold">
-            {data.tps === 0 || !isFinite(data.tps) || isNaN(data.tps) ? '--' : data.tps.toFixed(2)}
+            {data.tps > 0 && isFinite(data.tps) ? data.tps.toFixed(2) : '--'}
           </span>
           <span className="col-span-2 font-bold">
-            {chainMaxTps[data.name]?.toFixed(2) || '--'}
+            {chainMaxTps[data.name] > 0 && isFinite(chainMaxTps[data.name]) 
+              ? chainMaxTps[data.name].toFixed(2) 
+              : '--'}
           </span>
           <span className="col-span-4">
             {data.accumulatedExtrinsics.toLocaleString()}

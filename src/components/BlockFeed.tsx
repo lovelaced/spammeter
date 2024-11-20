@@ -98,11 +98,12 @@ export const BlockFeed: React.FC<BlockFeedProps> = ({ chainData }) => {
                   : 'text-[#9ab1a9]'
                   }`}
               >
-                {block.blockTime?.toFixed(2)}s
+                {block.blockTime && block.blockTime > 0 ? `${block.blockTime.toFixed(2)}s` : '--'}
                 {block.blockTime && block.blockTime < 5 && (
                   <Zap className="ml-1 h-4 w-4 text-[#f2ff0d]" />
                 )}
               </span>
+
             </div>
           ))}
         </div>

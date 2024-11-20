@@ -50,7 +50,7 @@ export abstract class DataSource {
       ...(existingChain?.recentBlocks || []),
       {
         chainId: chainId,
-        extrinsics: update.extrinsics_num,
+        extrinsics: update.extrinsics_num - 2,
         timestamp: update.timestamp,
         blockTime: update.block_time_seconds ?? 0,
         blockNumber: update.block_number,      // Include blockNumber
@@ -94,7 +94,6 @@ export abstract class DataSource {
     const totalTpsEma = this.calculateEma(this.state.totalTpsEma || totalTps, totalTps);
     const dataPoints = this.state.dataPoints + 1;
     const confidenceMetric = this.calculateConfidenceMetric(globalTimeWindow, dataPoints);
-    console.log(confidenceMetric)
 
     this.state = { 
       chainData: updatedChainData, 
