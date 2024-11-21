@@ -18,11 +18,12 @@ import { kusamaChainsConfig } from './chains';
 import { Dropdown } from './Dropdown';
 import SpamButton from './SpamButton';
 import Leaderboard from './Leaderboard';
+import { DataSourceSwitch } from './DataSourceSwitch';
 
 
 const ChaoticPopupChaosometer = () => {
   const [selectedChain, setSelectedChain] = useState<string>(''); // Manage the selected chain state
-  const [useMockData] = useState(false)
+  const [useMockData, setUseMockData] = useState(true)
   const dataSource = useMemo(() => useMockData ? new TestnetDataSource() : new RealDataSource(), [useMockData])
   const { chainData, totalTps, confidenceMetric } = useDataSource(dataSource);
   const [blocks, setBlocks] = useState<
@@ -94,9 +95,9 @@ const ChaoticPopupChaosometer = () => {
     setShowHighTPS(true);
   }, [chainData]);
 
-  //const toggleDataSource = () => {
-  //   setUseMockData(prev => !prev)
-  // }
+  const toggleDataSource = () => {
+    setUseMockData(prev => !prev)
+  }
 
   const closePopup = (id: string) => {
     setVisiblePopups(prev => prev.filter(p => p !== id));
@@ -147,25 +148,25 @@ const ChaoticPopupChaosometer = () => {
             </div>
             {/* Buttons Container */}
             <div className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-2">
-  {/* spam button */}
-  <div className="flex flex-col items-start space-y-1">
-    <SpamButton rpcUrl={selectedChain} disabled={!selectedChain} />
-  </div>
-  {/* send tweet button */}
-  <Button
-    onClick={sendTweet}
-    className="h-[38px] bg-black text-white border-4 border-black px-4 py-2 text-sm font-bold hover:bg-white hover:text-black transition-colors active:shadow-none relative overflow-hidden group"
-  >
-    <span className="relative z-10 flex items-center justify-center">
-      SEND TWEET
-    </span>
-    <span className="absolute inset-0 bg-gradient-to-r from-[#7916F3] to-[#ea4070] opacity-0 group-hover:opacity-100 transition-opacity" />
-  </Button>
-</div>
+              {/* spam button */}
+              <div className="flex flex-col items-start space-y-1">
+                <SpamButton rpcUrl={selectedChain} disabled={!selectedChain} />
+              </div>
+              <DataSourceSwitch useMockData={useMockData} onToggle={toggleDataSource} />
 
+              {/* send tweet button */}
+              <Button
+                onClick={sendTweet}
+                className="h-[38px] bg-black text-white border-4 border-black px-4 py-2 text-sm font-bold hover:bg-white hover:text-black transition-colors active:shadow-none relative overflow-hidden group"
+              >
+                <span className="relative z-10 flex items-center justify-center">
+                  SEND TWEET
+                </span>
+                <span className="absolute inset-0 bg-gradient-to-r from-[#7916F3] to-[#ea4070] opacity-0 group-hover:opacity-100 transition-opacity" />
+              </Button>
+            </div>
           </div>
         </div>
-
         <div className="grid grid-cols-12 gap-4 mb-4">
           <AnimatePresence>
             <React.Fragment key="tps">
@@ -227,7 +228,7 @@ const ChaoticPopupChaosometer = () => {
                   onClose={() => closePopup('leaderboard')}
                   className="col-span-12 sm:col-span-6 lg:col-span-5 w-full"
                 >
-                 <Leaderboard
+                  <Leaderboard
                     chainData={chainData}
                     chainMaxTps={chainMaxTps}
                     renderChainName={renderChainName}

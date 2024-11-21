@@ -50,7 +50,7 @@ export abstract class DataSource {
       ...(existingChain?.recentBlocks || []),
       {
         chainId: chainId,
-        extrinsics: update.extrinsics_num - 2,
+        extrinsics: Math.max(0, update.extrinsics_num - 2), // Ensure extrinsics is at least 0
         timestamp: update.timestamp,
         blockTime: update.block_time_seconds ?? 0,
         blockNumber: update.block_number,      // Include blockNumber

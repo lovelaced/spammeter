@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { Check, ChevronDown } from 'lucide-react'
-import { kusamaChainsConfig, ChainConfig } from './chains'
+import { kusamaChainsConfig, westendChainsConfig, ChainConfig } from './chains'
 
 interface DropdownProps {
   selectedChain: string | null;
@@ -21,11 +21,11 @@ export function Dropdown({ selectedChain, setSelectedChain }: DropdownProps) {
   };
 
   const selectedChainConfig = React.useMemo(() => {
-    return Object.values(kusamaChainsConfig).find(chain => chain.rpcUrl === selectedChain)
+    return Object.values(westendChainsConfig).find(chain => chain.rpcUrl === selectedChain)
   }, [selectedChain])
 
   const filteredChains = React.useMemo(() => {
-    return Object.values(kusamaChainsConfig).filter((chain) => 
+    return Object.values(westendChainsConfig).filter((chain) => 
       chain && chain.displayName && chain.displayName.startsWith('YAP') && chain.rpcUrl
     );
   }, []);
@@ -72,7 +72,7 @@ export function Dropdown({ selectedChain, setSelectedChain }: DropdownProps) {
         <ChevronDown className="h-4 w-4 shrink-0 ml-2" />
       </button>
       {isOpen && (
-        <div className="absolute z-10 w-[200px] top-[38px] bg-black border-2 border-t-0 border-black">
+        <div className="absolute z-20 w-[200px] top-[38px] bg-black border-2 border-t-0 border-black">
           <div className="py-1">
             {filteredChains.map((chain) => (
               <button
