@@ -68,11 +68,11 @@ export function SpamButton({ rpcUrl, disabled }: SpamButtonProps) {
       console.log('Submitted magicMintExperimental extrinsic with hash:', hash.toHex());
 
       // Wait for the balance to be updated
-      let balance = await api.query.system.account(address);
+      let balance = await api.query.system.account(address) as AccountInfo;
       let retries = 10;
       while (balance.data.free.isZero() && retries > 0) {
         await new Promise((resolve) => setTimeout(resolve, 6000)); // Wait for 6 seconds
-        balance = await api.query.system.account(address);
+        balance = await api.query.system.account(address) as AccountInfo;
         retries--;
       }
 

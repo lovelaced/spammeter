@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { Check, ChevronDown } from 'lucide-react'
-import { kusamaChainsConfig, westendChainsConfig, ChainConfig } from './chains'
+import { westendChainsConfig, ChainConfig } from './chains'
 
 interface DropdownProps {
   selectedChain: string | null;

@@ -19,7 +19,6 @@ self.onmessage = async (event) => {
     const keyring = new Keyring({ type: 'sr25519' });
 
     const sender = keyring.addFromMnemonic(mnemonic);
-    const senderAddress = sender.address;
 
     const transfers = [];
 
