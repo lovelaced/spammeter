@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { PopupWindow } from './PopupWindow'; // Assuming this component exists
 
 interface TPSMeterProps {
@@ -14,10 +14,19 @@ export const TPSMeter: React.FC<TPSMeterProps> = ({ totalTps, onClose }) => {
     const logMinTps = Math.log10(minTps);
     const logMaxTps = Math.log10(maxTps);
     const logTps = Math.log10(Math.max(minTps, tps));
-    
+
     // Map the logarithmic value to an angle between 0 and 360 degrees
     return ((logTps - logMinTps) / (logMaxTps - logMinTps)) * 360;
   };
+
+  const [maxTps, setMaxTps] = useState(totalTps);
+
+  // Update maxTps whenever totalTps increases
+  useEffect(() => {
+    if (totalTps > maxTps) {
+      setMaxTps(totalTps);
+    }
+  }, [totalTps, maxTps]);
 
   const angle = getScaledAngle(totalTps);
 
@@ -42,6 +51,7 @@ export const TPSMeter: React.FC<TPSMeterProps> = ({ totalTps, onClose }) => {
               <div className="text-xl font-bold text-white">TPS</div>
             </div>
           </div>
+          <div className="mt-4 text-sm text-gray-400">Max: {maxTps.toFixed(1)}</div>
         </div>
       </div>
     </PopupWindow>
