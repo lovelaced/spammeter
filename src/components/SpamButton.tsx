@@ -1,5 +1,3 @@
-// SpamButton.tsx
-
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -7,14 +5,14 @@ import { ApiPromise, WsProvider, Keyring } from '@polkadot/api';
 import { mnemonicGenerate } from '@polkadot/util-crypto';
 import { Button } from '@/components/ui/button';
 import { Loader2, ArrowUp } from 'lucide-react';
-import type { AccountInfo } from '@polkadot/types/interfaces';
+import { AccountInfo } from '@polkadot/types/interfaces';
 
 interface SpamButtonProps {
   rpcUrl: string;
   disabled: boolean;
 }
 
-const LIMIT = 1;
+const LIMIT = 1000;
 
 export function SpamButton({ rpcUrl, disabled }: SpamButtonProps) {
   const [status, setStatus] = useState('idle');
@@ -100,26 +98,34 @@ export function SpamButton({ rpcUrl, disabled }: SpamButtonProps) {
 
     try {
       const apiInstance = await initializeApi();
-
+      const keyring = new Keyring({ type: 'sr25519' });
       // Generate and fund a new account
       setStatus('generating account');
       const fundedAccount = await generateFundedAccount(apiInstance);
-
-      // Update status to 'signing transactions' before starting the workers
-      setStatus('signing transactions');
-
-      // Get the number of CPU cores
-      const numCores = navigator.hardwareConcurrency || 4; // Default to 4 if not available
-      const numWorkers = numCores;
-
-      // Calculate workload per worker
-      const chunkSize = Math.ceil(LIMIT / numWorkers);
-
-      // Get the starting nonce
+      console.log('Funded account:', fundedAccount);
+      // fetch starting nonce
+      const aliceAddress = keyring.addFromUri('//Alice//stash').address;
       const accountInfo = await apiInstance.query.system.account(fundedAccount.address) as AccountInfo;
       const startingNonce = accountInfo.nonce.toNumber();
 
-      // Store references to workers and their promises
+      console.log(`Fetched starting nonce for Alice: ${startingNonce}`);
+      console.log(`Total transactions to be signed (LIMIT): ${LIMIT}`);
+
+      setStatus('signing transactions');
+
+      const batchSize = 100; // transactions per batch
+      const totalBatches = Math.ceil(LIMIT / batchSize); // total number of batches
+      console.log(`Batch size: ${batchSize}`);
+      console.log(`Total batches: ${totalBatches}`);
+
+      const numCores = navigator.hardwareConcurrency || 4;
+      const numWorkers = Math.min(numCores, totalBatches); // limit workers to available batches
+      console.log(`Number of available CPU cores: ${numCores}`);
+      console.log(`Number of workers to be spawned: ${numWorkers}`);
+
+      const batchesPerWorker = Math.ceil(totalBatches / numWorkers); // distribute batches evenly
+      console.log(`Batches per worker: ${batchesPerWorker}`);
+
       const workerPromises = [];
       const signedTxsArrays: string[][] = [];
       const workerProgresses = new Array(numWorkers).fill(0);
@@ -127,11 +133,17 @@ export function SpamButton({ rpcUrl, disabled }: SpamButtonProps) {
       for (let i = 0; i < numWorkers; i++) {
         const worker = new Worker(new URL('./signingWorker.ts', import.meta.url), { type: 'module' });
 
-        const start = i * chunkSize;
-        const end = Math.min((i + 1) * chunkSize, LIMIT);
-        const workerLimit = end - start;
+        const startBatch = i * batchesPerWorker; // starting batch index for this worker
+        const endBatch = Math.min((i + 1) * batchesPerWorker, totalBatches); // ending batch index
+        const workerBatches = endBatch - startBatch;
+        const workerBaseNonce = startingNonce + startBatch; // nonce incremented per batch
 
-        // Create a promise to handle each worker's completion
+        console.log(`Worker ${i}:`);
+        console.log(`  Start batch index: ${startBatch}`);
+        console.log(`  End batch index: ${endBatch}`);
+        console.log(`  Total batches assigned: ${workerBatches}`);
+        console.log(`  Base nonce for this worker: ${workerBaseNonce}`);
+
         const workerPromise = new Promise<void>((resolve, reject) => {
           worker.onmessage = (event) => {
             const { signedTxs, error, progress: workerProgress } = event.data;
@@ -145,16 +157,16 @@ export function SpamButton({ rpcUrl, disabled }: SpamButtonProps) {
             }
 
             if (workerProgress !== undefined) {
-              // Update progress based on worker progress
-              workerProgresses[i] = workerProgress; // workerProgress is between 0 and 100
+              workerProgresses[i] = workerProgress;
               const totalWorkerProgress = workerProgresses.reduce((sum, curr) => sum + curr, 0) / numWorkers;
-              // We'll just say signing is 50% of total progress
-              const totalProgress = (totalWorkerProgress / 100) * 50; // totalProgress between 0 and 50
+              const totalProgress = (totalWorkerProgress / 100) * 50; // signing is 50% of total progress
+              // console.log(`Worker ${i} progress: ${workerProgress}%. Total progress: ${totalProgress.toFixed(1)}%`);
               setProgress(totalProgress);
               return;
             }
 
             if (signedTxs) {
+              console.log(`Worker ${i} completed signing ${signedTxs.length} batches.`);
               signedTxsArrays[i] = signedTxs;
               resolve();
             }
@@ -168,50 +180,45 @@ export function SpamButton({ rpcUrl, disabled }: SpamButtonProps) {
           };
         });
 
-        const workerNonce = startingNonce + i;
-
         worker.postMessage({
-          mnemonic: fundedAccount.mnemonic,
-          startIndex: start,
-          limit: workerLimit,
-          apiInstanceUrl: rpcUrl, // Use the rpcUrl directly
-          nonce: workerNonce,
+          privateKey: fundedAccount.mnemonic,
+          startIndex: startBatch * batchSize, // start index for transactions
+          limit: workerBatches * batchSize, // total transactions for this worker
+          baseNonce: workerBaseNonce, // nonce for the first batch
+          apiInstanceUrl: rpcUrl,
+          batchSize, // size of each batch
         });
 
         workerPromises.push(workerPromise);
       }
 
-      // Wait for all workers to finish
+      console.log('Waiting for all workers to complete signing...');
       await Promise.all(workerPromises);
 
-      // Combine all signed transactions
       const allSignedTxs = signedTxsArrays.flat();
+      console.log(`All workers completed. Total signed batches: ${allSignedTxs.length}`);
 
-      // Update status to 'submitting transactions'
       setStatus('submitting transactions');
-
-      // Reset progress for submission phase
       setProgress(50);
 
-      // Submit the batched transactions sequentially
       for (let i = 0; i < allSignedTxs.length; i++) {
         try {
           const txHex = allSignedTxs[i];
           await apiInstance.rpc.author.submitExtrinsic(txHex);
-          console.log(`Transaction ${i + 1} submitted successfully.`);
-          // Update progress during submission phase
-          const submissionProgress = ((i + 1) / allSignedTxs.length) * 50; // From 50 to 100%
+          console.log(`Batch ${i + 1}/${allSignedTxs.length} submitted successfully.`);
+          const submissionProgress = ((i + 1) / allSignedTxs.length) * 50; // submission phase is 50%
           setProgress(50 + submissionProgress);
         } catch (error) {
-          console.error(`Failed to submit transaction ${i + 1}`, error);
+          console.error(`Failed to submit batch ${i + 1}`, error);
         }
       }
 
       setStatus('completed');
       setProgress(100);
+      console.log('All batches submitted successfully.');
+
       setIsRunning(false);
 
-      // change status back to "idle" after 1 second
       setTimeout(() => {
         setStatus('idle');
       }, 1000);
@@ -222,11 +229,12 @@ export function SpamButton({ rpcUrl, disabled }: SpamButtonProps) {
     }
   };
 
+
   return (
     <div className="w-80 flex flex-col items-start space-y-2">
       <Button
         onClick={runTransfers}
-        disabled={disabled || isRunning}
+        disabled={disabled || isRunning} // Disable if no chain is selected or if running
         className="w-full h-[38px] bg-black text-white border-4 border-black px-4 py-2 text-sm font-bold hover:bg-white hover:text-black transition-colors shadow-md relative overflow-hidden group"
       >
         <span className="relative z-10 flex items-center justify-center">
@@ -261,7 +269,7 @@ function SpamStatus({ status, progress }: { status: string; progress: number }) 
     <div className="w-full space-y-1">
       <div className="flex justify-between items-center">
         <p className={`text-xs font-medium ${status}`}>
-          {status !== 'idle' && (
+          {status !== 'idlez' && (
             <>
               {`Status: ${status.charAt(0).toUpperCase() + status.slice(1)}`}
               {(status === 'signing transactions' || status === 'submitting transactions') && (
