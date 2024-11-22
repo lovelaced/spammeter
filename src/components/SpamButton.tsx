@@ -19,29 +19,49 @@ export function SpamButton({ rpcUrl, disabled }: SpamButtonProps) {
   const [progress, setProgress] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
   const [api, setApi] = useState<ApiPromise | null>(null);
+  const [isApiReady, setIsApiReady] = useState(false);
 
   useEffect(() => {
     if (rpcUrl) {
       initializeApi();
+    } else {
+      setIsApiReady(false); // mark API as not ready if no rpcUrl
+      if (api) {
+        console.log('Disconnecting API as rpcUrl is unset...');
+        api.disconnect(); // Clean up API instance when rpcUrl is removed
+        setApi(null);
+      }
     }
-  }, [rpcUrl]);
+  }, [rpcUrl]);  
 
   const initializeApi = async (): Promise<ApiPromise> => {
-    if (api || !rpcUrl) {
-      return api!;
-    }
     try {
+      if (api) {
+        console.log('Destroying previous API instance...');
+        await api.disconnect(); // Disconnect the old instance before creating a new one
+        setApi(null);
+      }
+  
+      if (!rpcUrl) {
+        console.log('No rpcUrl provided; skipping API initialization.');
+        return Promise.reject(new Error('rpcUrl is not set.'));
+      }
+  
       console.log('Initializing API...');
+      setIsApiReady(false); // mark API as not ready
       const wsProvider = new WsProvider(rpcUrl);
       const apiInstance = await ApiPromise.create({ provider: wsProvider });
       console.log('API initialized successfully.');
       setApi(apiInstance);
+      setIsApiReady(true); // mark API as ready
       return apiInstance;
     } catch (error) {
       console.error('Error initializing API:', error);
+      setIsApiReady(false);
       throw error;
     }
   };
+  
 
   const generateFundedAccount = async (api: ApiPromise) => {
     // Generate a random mnemonic
@@ -103,8 +123,8 @@ export function SpamButton({ rpcUrl, disabled }: SpamButtonProps) {
       setStatus('generating account');
       const fundedAccount = await generateFundedAccount(apiInstance);
       console.log('Funded account:', fundedAccount);
+
       // fetch starting nonce
-      const aliceAddress = keyring.addFromUri('//Alice//stash').address;
       const accountInfo = await apiInstance.query.system.account(fundedAccount.address) as AccountInfo;
       const startingNonce = accountInfo.nonce.toNumber();
 
@@ -160,7 +180,6 @@ export function SpamButton({ rpcUrl, disabled }: SpamButtonProps) {
               workerProgresses[i] = workerProgress;
               const totalWorkerProgress = workerProgresses.reduce((sum, curr) => sum + curr, 0) / numWorkers;
               const totalProgress = (totalWorkerProgress / 100) * 50; // signing is 50% of total progress
-              // console.log(`Worker ${i} progress: ${workerProgress}%. Total progress: ${totalProgress.toFixed(1)}%`);
               setProgress(totalProgress);
               return;
             }
@@ -229,13 +248,14 @@ export function SpamButton({ rpcUrl, disabled }: SpamButtonProps) {
     }
   };
 
-
   return (
     <div className="w-80 flex flex-col items-start space-y-2">
       <Button
         onClick={runTransfers}
-        disabled={disabled || isRunning} // Disable if no chain is selected or if running
-        className="w-full h-[38px] bg-black text-white border-4 border-black px-4 py-2 text-sm font-bold hover:bg-white hover:text-black transition-colors shadow-md relative overflow-hidden group"
+        disabled={!rpcUrl || !isApiReady || disabled || isRunning} // Disable until chain is selected, API is ready, or running
+        className={`w-full h-[38px] bg-black text-white border-4 border-black px-4 py-2 text-sm font-bold transition-colors shadow-md relative overflow-hidden group ${
+          !rpcUrl || !isApiReady || disabled || isRunning ? 'opacity-50 cursor-not-allowed' : 'hover:bg-white hover:text-black'
+        }`}
       >
         <span className="relative z-10 flex items-center justify-center">
           {isRunning ? (
@@ -243,8 +263,8 @@ export function SpamButton({ rpcUrl, disabled }: SpamButtonProps) {
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               Running spam program...
             </>
-          ) : disabled ? (
-            // show different icons based on screen size
+          ) : !rpcUrl ? (
+            // No chain selected
             <span className="flex items-center">
               <span className="hidden sm:block">&lt;-- Select a chain to spam</span>
               <span className="block sm:hidden flex items-center">
@@ -252,7 +272,14 @@ export function SpamButton({ rpcUrl, disabled }: SpamButtonProps) {
                 Select a chain to spam
               </span>
             </span>
+          ) : !isApiReady ? (
+            // API is initializing
+            <span className="flex items-center">
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Initializing API...
+            </span>
           ) : (
+            // Ready to spam
             'SPAM NOW'
           )}
         </span>
@@ -261,8 +288,8 @@ export function SpamButton({ rpcUrl, disabled }: SpamButtonProps) {
       </Button>
       <SpamStatus status={status} progress={progress} />
     </div>
-  );
-}
+  );  
+}  
 
 function SpamStatus({ status, progress }: { status: string; progress: number }) {
   return (
