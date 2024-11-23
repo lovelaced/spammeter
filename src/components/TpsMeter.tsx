@@ -3,10 +3,11 @@ import { PopupWindow } from './PopupWindow'; // Assuming this component exists
 
 interface TPSMeterProps {
   totalTps: number;
+  isHighConfidence: boolean;
   onClose: () => void;
 }
 
-export const TPSMeter: React.FC<TPSMeterProps> = ({ totalTps, onClose }) => {
+export const TPSMeter: React.FC<TPSMeterProps> = ({ totalTps, isHighConfidence, onClose }) => {
   // Logarithmic scale calculation
   const getScaledAngle = (tps: number) => {
     const minTps = 1; // To avoid log(0)
@@ -23,7 +24,7 @@ export const TPSMeter: React.FC<TPSMeterProps> = ({ totalTps, onClose }) => {
 
   // Update maxTps whenever totalTps increases
   useEffect(() => {
-    if (totalTps > maxTps) {
+    if (totalTps > maxTps && isHighConfidence) {
       setMaxTps(totalTps);
     }
   }, [totalTps, maxTps]);
@@ -47,11 +48,14 @@ export const TPSMeter: React.FC<TPSMeterProps> = ({ totalTps, onClose }) => {
               }}
             />
             <div className="z-10 bg-black rounded-full w-44 h-44 flex flex-col items-center justify-center">
-              <div className="text-3xl font-bold text-white">{totalTps.toFixed(1)}</div>
+              <div className="text-3xl font-bold text-white">{(totalTps).toFixed(1)}</div>
               <div className="text-xl font-bold text-white">TPS</div>
+
+              <div className="mt-1 text-sm text-gray-500">Max: {maxTps > 0 && isFinite(maxTps)
+                ? maxTps.toFixed(1) 
+                : '--'}</div>
             </div>
           </div>
-          <div className="mt-4 text-sm text-gray-400">Max: {maxTps.toFixed(1)}</div>
         </div>
       </div>
     </PopupWindow>

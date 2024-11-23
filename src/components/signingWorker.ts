@@ -2,7 +2,6 @@
 export default null;
 
 import { ApiPromise, WsProvider, Keyring } from '@polkadot/api';
-import type { AccountInfo } from '@polkadot/types/interfaces';
 import { cryptoWaitReady } from '@polkadot/util-crypto';
 
 self.onmessage = async (event) => {

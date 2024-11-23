@@ -62,21 +62,21 @@ export const polkadotChainsConfig: ChainsConfig = {
 } as const;
 
 export const kusamaChainsConfig: ChainsConfig = {
-  YAP3363: { paraId: 3363, displayName: 'YAP3363', icon: Bird, color: '#3316F3', rpcUrl: "wss://kusama-yap-3363.parity-chains.parity.io" }, // Blue
-  YAP3362: { paraId: 3362, displayName: 'YAP3362', icon: Snail, color: '#2BD900', rpcUrl: "wss://kusama-yap-3362.parity-chains.parity.io" }, // Green
-  YAP3361: { paraId: 3361, displayName: 'YAP3361', icon: Cat, color: '#FACC14', rpcUrl: "wss://kusama-yap-3361.parity-chains.parity.io" }, // Yellow
-  YAP3360: { paraId: 3360, displayName: 'YAP3360', icon: Beer, color: '#FF7926', rpcUrl: "wss://kusama-yap-3360.parity-chains.parity.io" }, // Orange
-  YAP3359: { paraId: 3359, displayName: 'YAP3359', icon: Rabbit, color: '#FF2670', rpcUrl: "wss://kusama-yap-3359.parity-chains.parity.io" }, // Pink
-  YAP3379: { paraId: 3379, displayName: 'YAP3379', icon: Dog, color: '#7F16F3', rpcUrl: "wss://kusama-yap-3379.parity-chains.parity.io" }, // Purple
-  YAP3380: { paraId: 3380, displayName: 'YAP3380', icon: Turtle, color: '#1ADDA8', rpcUrl: "wss://kusama-yap-3380.parity-chains.parity.io" }, // Teal
+  YAP3363: { paraId: 3363, displayName: 'YAP3363', icon: Bird, color: '#3316F3', rpcUrl: "wss://kusama-yap-3363.parity-chains.parity.io" }, // Thematic Blue
+  YAP3362: { paraId: 3362, displayName: 'YAP3362', icon: Snail, color: '#2BD900', rpcUrl: "wss://kusama-yap-3362.parity-chains.parity.io" }, // Thematic Green
+  YAP3361: { paraId: 3361, displayName: 'YAP3361', icon: Cat, color: '#FACC14', rpcUrl: "wss://kusama-yap-3361.parity-chains.parity.io" }, // Thematic Yellow
+  YAP3360: { paraId: 3360, displayName: 'YAP3360', icon: Beer, color: '#FF7926', rpcUrl: "wss://kusama-yap-3360.parity-chains.parity.io" }, // Thematic Orange
+  YAP3359: { paraId: 3359, displayName: 'YAP3359', icon: Rabbit, color: '#FF2670', rpcUrl: "wss://kusama-yap-3359.parity-chains.parity.io" }, // Thematic Pink
+  YAP3379: { paraId: 3379, displayName: 'YAP3379', icon: Dog, color: '#7916F3', rpcUrl: "wss://kusama-yap-3379.parity-chains.parity.io" }, // Thematic Purple
+  YAP3380: { paraId: 3380, displayName: 'YAP3380', icon: Turtle, color: '#1ADDA8', rpcUrl: "wss://kusama-yap-3380.parity-chains.parity.io" }, // Thematic Teal
   YAP3381: { paraId: 3381, displayName: 'YAP3381', icon: Leaf, color: '#F07D16', rpcUrl: "wss://kusama-yap-3381.parity-chains.parity.io" }, // Burnt Orange
-  YAP3382: { paraId: 3382, displayName: 'YAP3382', icon: Worm, color: '#F31689', rpcUrl: "wss://kusama-yap-3382.parity-chains.parity.io" }, // Magenta
+  YAP3382: { paraId: 3382, displayName: 'YAP3382', icon: Worm, color: '#F31689', rpcUrl: "wss://kusama-yap-3382.parity-chains.parity.io" }, // Thematic Magenta
   YAP3383: { paraId: 3383, displayName: 'YAP3383', icon: ChartCandlestick, color: '#16A2F3', rpcUrl: "wss://kusama-yap-3383.parity-chains.parity.io" }, // Sky Blue
   YAP3384: { paraId: 3384, displayName: 'YAP3384', icon: Fish, color: '#13D916', rpcUrl: "wss://kusama-yap-3384.parity-chains.parity.io" }, // Bright Green
   YAP3385: { paraId: 3385, displayName: 'YAP3385', icon: Bug, color: '#E916F3', rpcUrl: "wss://kusama-yap-3385.parity-chains.parity.io" }, // Neon Purple
   YAP3386: { paraId: 3386, displayName: 'YAP3386', icon: Stars, color: '#F3A216', rpcUrl: "wss://kusama-yap-3386.parity-chains.parity.io" }, // Golden Orange
-  YAP3387: { paraId: 3387, displayName: 'YAP3387', icon: Moon, color: '#168CF3', rpcUrl: "wss://kusama-yap-3387.parity-chains.parity.io" }, // Deep Blue
-  YAP3388: { paraId: 3388, displayName: 'YAP3388', icon: Coins, color: '#D91645', rpcUrl: "wss://kusama-yap-3388.parity-chains.parity.io" }, // Crimson
+  YAP3387: { paraId: 3387, displayName: 'YAP3387', icon: Moon, color: '#34495E', rpcUrl: "wss://kusama-yap-3387.parity-chains.parity.io" }, // Steely Grey
+  YAP3388: { paraId: 3388, displayName: 'YAP3388', icon: Coins, color: '#D91645', rpcUrl: "wss://kusama-yap-3388.parity-chains.parity.io" }, // Crimson 
   Kusama: { paraId: 2, displayName: 'Kusama' },
   AssetHub: { paraId: 1000, displayName: 'AssetHub' },
   BridgeHub: { paraId: 1002, displayName: 'BridgeHub' },
@@ -123,8 +123,7 @@ export const westendChainsConfig: ChainsConfig = {
   Collectives: { paraId: 1001, displayName: 'Collectives', icon: Power, color: '#FF7926' }, // Orange
   Coretime: { paraId: 1005, displayName: 'Coretime', icon: Zap, color: '#2BD900' }, // Green
   People: { paraId: 1004, displayName: 'People', icon: Contact, color: '#FACC14' }, // Yellow
-  YAP2022: { paraId: 2022, displayName: 'YAP2022', icon: Rabbit, color: '#FF262A' }, // Red
-  YAPersi2020: { paraId: 2020, displayName: 'Versi-2020' },
+  YAPVersi2020: { paraId: 2020, displayName: 'Versi-2020' },
   YAPVersi2021: { paraId: 2021, displayName: 'YAP-Versi-2021', icon: Bird, color: '#16A2F3', rpcUrl: "wss://versi-yap-2021.parity-versi.parity.io" }, // Blue
   YAPVersi2022: { paraId: 2022, displayName: 'YAP-Versi-2022', icon: Turtle, color: '#F39C12', rpcUrl: "wss://versi-yap-2022.parity-versi.parity.io" }, // Orange
   YAPVersi2023: { paraId: 2023, displayName: 'YAP-Versi-2023', icon: Zap, color: '#E74C3C', rpcUrl: "wss://versi-yap-2023.parity-versi.parity.io" }, // Red

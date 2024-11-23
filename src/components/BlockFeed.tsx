@@ -86,7 +86,12 @@ export const BlockFeed: React.FC<BlockFeedProps> = ({ chainData }) => {
             >
               <span className="text-[#9ab1a9]">{block.blockNumber}</span>
               <span className="text-[#9ab1a9]">{block.name}</span>
-              <span className="text-[#9ab1a9] flex items-center">
+              <span
+                className={`flex items-center ${block.extrinsics > 3000
+                  ? 'font-bold text-white'
+                  : 'text-[#9ab1a9]'
+                  }`}
+              >
                 {block.extrinsics.toString().padStart(3, '0')}
                 {block.extrinsics > 3000 && (
                   <Sparkles className="ml-1 h-4 w-4 text-[#bb9af7]" />

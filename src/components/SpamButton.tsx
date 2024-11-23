@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { ApiPromise, WsProvider, Keyring } from '@polkadot/api';
 import { mnemonicGenerate } from '@polkadot/util-crypto';
 import { Button } from '@/components/ui/button';
-import { Loader2, ArrowUp } from 'lucide-react';
+import { Loader2, ArrowUp, XCircle } from 'lucide-react';
 import { AccountInfo } from '@polkadot/types/interfaces';
 
 interface SpamButtonProps {
@@ -12,7 +12,7 @@ interface SpamButtonProps {
   disabled: boolean;
 }
 
-const LIMIT = 1000;
+const LIMIT = 7000;
 
 export function SpamButton({ rpcUrl, disabled }: SpamButtonProps) {
   const [status, setStatus] = useState('idle');
@@ -21,46 +21,121 @@ export function SpamButton({ rpcUrl, disabled }: SpamButtonProps) {
   const [api, setApi] = useState<ApiPromise | null>(null);
   const [isApiReady, setIsApiReady] = useState(false);
 
-  useEffect(() => {
-    if (rpcUrl) {
-      initializeApi();
-    } else {
-      setIsApiReady(false); // mark API as not ready if no rpcUrl
-      if (api) {
-        console.log('Disconnecting API as rpcUrl is unset...');
-        api.disconnect(); // Clean up API instance when rpcUrl is removed
-        setApi(null);
-      }
-    }
-  }, [rpcUrl]);  
+  let activeWsProvider: WsProvider | null = null; // Track the active websocket provider
 
-  const initializeApi = async (): Promise<ApiPromise> => {
-    try {
+  const initializeApi = async (): Promise<ApiPromise | null> => {
+    const timeout = 5_000; // 5 seconds timeout for API initialization
+  
+    // Cleanup old API instance and WebSocket provider
+    if (api) {
+      console.log('Cleaning up previous API instance...');
+      try {
+        await api.disconnect();
+      } catch (e) {
+        console.warn('Failed to clean up old API instance:', e);
+      }
+      setApi(null);
+    }
+  
+    if (activeWsProvider) {
+      console.log('Terminating old WebSocket provider...');
+      try {
+        activeWsProvider.disconnect(); // Explicitly close the WebSocket
+      } catch (e) {
+        console.warn('Failed to terminate old WebSocket provider:', e);
+      }
+      activeWsProvider = null;
+    }
+  
+    if (!rpcUrl) {
+      console.log('No RPC URL provided. Skipping API initialization.');
+      setIsApiReady(false);
+      return null;
+    }
+  
+    console.log('Initializing API with RPC URL:', rpcUrl);
+    setIsApiReady(false);
+    setStatus('Connecting to chain');
+  
+    const wsProvider = new WsProvider(rpcUrl); // Use default reconnect logic
+    activeWsProvider = wsProvider; // Track the new provider
+  
+    const initApi = async (): Promise<ApiPromise | null> => {
+      try {
+        const apiInstance = await Promise.race([
+          ApiPromise.create({ provider: wsProvider }),
+          new Promise<never>((_, reject) =>
+            setTimeout(() => reject(new Error('API initialization timed out')), timeout)
+          ),
+        ]);
+  
+        if (activeWsProvider !== wsProvider) {
+          console.warn('API initialization aborted due to RPC URL change.');
+          await apiInstance.disconnect();
+          return null;
+        }
+  
+        console.log('API initialized successfully.');
+        setApi(apiInstance);
+        setIsApiReady(true);
+        setStatus('Idle');
+        return apiInstance;
+      } catch (error) {
+        console.error('Error during API initialization:', error);
+  
+        // Update the status with a user-friendly message
+        setStatus('Connection failed, try another!');
+        setIsApiReady(false);
+  
+        // Cleanup failed provider
+        if (activeWsProvider === wsProvider) {
+          console.log('Cleaning up failed WebSocket provider...');
+          wsProvider.disconnect();
+          activeWsProvider = null;
+        }
+  
+        return null;
+      }
+    };
+  
+    return initApi();
+  };
+  
+  
+  useEffect(() => {
+    const abortController = new AbortController();
+  
+    if (rpcUrl) {
+      initializeApi().catch((error) => console.error('Failed to initialize API:', error));
+    } else {
+      setIsApiReady(false);
       if (api) {
-        console.log('Destroying previous API instance...');
-        await api.disconnect(); // Disconnect the old instance before creating a new one
+        console.log('Disconnecting API as RPC URL is unset...');
+        api.disconnect().catch((e) => console.warn('Error disconnecting API:', e));
         setApi(null);
       }
-  
-      if (!rpcUrl) {
-        console.log('No rpcUrl provided; skipping API initialization.');
-        return Promise.reject(new Error('rpcUrl is not set.'));
+      if (activeWsProvider) {
+        console.log('Terminating active WebSocket provider...');
+        activeWsProvider.disconnect();
+        activeWsProvider = null;
       }
-  
-      console.log('Initializing API...');
-      setIsApiReady(false); // mark API as not ready
-      const wsProvider = new WsProvider(rpcUrl);
-      const apiInstance = await ApiPromise.create({ provider: wsProvider });
-      console.log('API initialized successfully.');
-      setApi(apiInstance);
-      setIsApiReady(true); // mark API as ready
-      return apiInstance;
-    } catch (error) {
-      console.error('Error initializing API:', error);
-      setIsApiReady(false);
-      throw error;
     }
-  };
+  
+    // Cleanup logic for unmounting or rpcUrl change
+    return () => {
+      abortController.abort();
+      if (api) {
+        console.log('Cleaning up API instance...');
+        api.disconnect().catch((e) => console.warn('Error during API cleanup:', e));
+        setApi(null);
+      }
+      if (activeWsProvider) {
+        console.log('Cleaning up WebSocket provider...');
+        activeWsProvider.disconnect();
+        activeWsProvider = null;
+      }
+    };
+  }, [rpcUrl]);
   
 
   const generateFundedAccount = async (api: ApiPromise) => {
@@ -118,9 +193,11 @@ export function SpamButton({ rpcUrl, disabled }: SpamButtonProps) {
 
     try {
       const apiInstance = await initializeApi();
-      const keyring = new Keyring({ type: 'sr25519' });
       // Generate and fund a new account
       setStatus('generating account');
+      if (!apiInstance) {
+        throw new Error('API instance is not initialized');
+      }
       const fundedAccount = await generateFundedAccount(apiInstance);
       console.log('Funded account:', fundedAccount);
 
@@ -272,6 +349,12 @@ export function SpamButton({ rpcUrl, disabled }: SpamButtonProps) {
                 Select a chain to spam
               </span>
             </span>
+          ) : status === 'Connection failed, try another!' ? (
+            // API connection failed
+            <span className="flex items-center text-red-600">
+              <XCircle className="mr-2 h-4 w-4" />
+              API not initialized
+            </span>
           ) : !isApiReady ? (
             // API is initializing
             <span className="flex items-center">
@@ -288,7 +371,7 @@ export function SpamButton({ rpcUrl, disabled }: SpamButtonProps) {
       </Button>
       <SpamStatus status={status} progress={progress} />
     </div>
-  );  
+  ); 
 }  
 
 function SpamStatus({ status, progress }: { status: string; progress: number }) {

@@ -18,14 +18,13 @@ import { kusamaChainsConfig } from './chains';
 import { Dropdown } from './Dropdown';
 import SpamButton from './SpamButton';
 import Leaderboard from './Leaderboard';
-import { DataSourceSwitch } from './DataSourceSwitch';
-
 
 const ChaoticPopupChaosometer = () => {
   const [selectedChain, setSelectedChain] = useState<string>(''); // Manage the selected chain state
-  const [useMockData, setUseMockData] = useState(true)
+  const [useMockData] = useState(false)
   const dataSource = useMemo(() => useMockData ? new TestnetDataSource() : new RealDataSource(), [useMockData])
   const { chainData, totalTps, confidenceMetric } = useDataSource(dataSource);
+  const [isHighConfidence, setIsHighConfidence] = useState(false);
   const [blocks, setBlocks] = useState<
     Array<{
       id: string;
@@ -44,6 +43,7 @@ const ChaoticPopupChaosometer = () => {
   // Calculate and update max TPS for each chain
   useEffect(() => {
     if (confidenceMetric >= 0.95) { // Only update if confidence is high
+      setIsHighConfidence(true);
       const updatedChainMaxTps = { ...chainMaxTps };
       Object.values(chainData).forEach((data) => {
         if (!updatedChainMaxTps[data.name] || data.tps > updatedChainMaxTps[data.name]) {
@@ -95,9 +95,9 @@ const ChaoticPopupChaosometer = () => {
     setShowHighTPS(true);
   }, [chainData]);
 
-  const toggleDataSource = () => {
-    setUseMockData(prev => !prev)
-  }
+ // const toggleDataSource = () => {
+ //   setUseMockData(prev => !prev)
+  //}
 
   const closePopup = (id: string) => {
     setVisiblePopups(prev => prev.filter(p => p !== id));
@@ -106,7 +106,7 @@ const ChaoticPopupChaosometer = () => {
   const [chainMaxTps, setChainMaxTps] = useState<{ [key: string]: number }>({}); // State to track max TPS per chain
 
   const sendTweet = () => {
-    const tweetText = `Just saw ${totalTps.toFixed(2)} TPS during the @Polkadot spammening! #expectchaos`;
+    const tweetText = `Just saw ${totalTps.toFixed(1)} TPS during the @Polkadot spammening! #REKTHEMETER`;
     const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`;
     window.open(tweetUrl, '_blank');
   };
@@ -152,7 +152,6 @@ const ChaoticPopupChaosometer = () => {
               <div className="flex flex-col items-start space-y-1">
                 <SpamButton rpcUrl={selectedChain} disabled={!selectedChain} />
               </div>
-              <DataSourceSwitch useMockData={useMockData} onToggle={toggleDataSource} />
 
               {/* send tweet button */}
               <Button
@@ -174,6 +173,7 @@ const ChaoticPopupChaosometer = () => {
                 <TPSMeter
                   key="tps"
                   totalTps={totalTps}
+                  isHighConfidence={isHighConfidence}
                   onClose={() => closePopup('tps')}
                 />
               )}

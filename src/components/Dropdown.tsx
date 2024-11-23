@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { Check, ChevronDown } from 'lucide-react'
-import { westendChainsConfig, ChainConfig } from './chains'
+import { kusamaChainsConfig, ChainConfig } from './chains'
 
 interface DropdownProps {
   selectedChain: string | null;
@@ -21,11 +21,11 @@ export function Dropdown({ selectedChain, setSelectedChain }: DropdownProps) {
   };
 
   const selectedChainConfig = React.useMemo(() => {
-    return Object.values(westendChainsConfig).find(chain => chain.rpcUrl === selectedChain)
+    return Object.values(kusamaChainsConfig).find(chain => chain.rpcUrl === selectedChain)
   }, [selectedChain])
 
   const filteredChains = React.useMemo(() => {
-    return Object.values(westendChainsConfig).filter((chain) => 
+    return Object.values(kusamaChainsConfig).filter((chain) => 
       chain && chain.displayName && chain.displayName.startsWith('YAP') && chain.rpcUrl
     );
   }, []);
