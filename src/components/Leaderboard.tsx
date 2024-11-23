@@ -10,7 +10,7 @@ interface LeaderboardProps {
 const Leaderboard: React.FC<LeaderboardProps> = ({ chainData, chainMaxTps, renderChainName }) => {
   // sort chains by tps
   const leaderboard = Object.values(chainData)
-    .filter((chain) => !isNaN(chain.tps) && isFinite(chain.tps))
+    .filter((chain) => !isNaN(chain.tps) && isFinite(chain.tps) && chainMaxTps[chain.name] > 0)
     .sort((a, b) => b.tps - a.tps);
 
   return (
@@ -38,10 +38,10 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ chainData, chainMaxTps, rende
               {renderChainName(data)}
             </span>
             <span className="col-span-2 font-bold">
-              {data.tps > 0 && isFinite(data.tps) ? data.tps.toFixed(2) : '--'}
+              {isFinite(data.tps) ? data.tps.toFixed(2) : '--'}
             </span>
             <span className="col-span-2 font-bold">
-              {chainMaxTps[data.name] > 0 && isFinite(chainMaxTps[data.name]) 
+              {isFinite(chainMaxTps[data.name]) 
                 ? chainMaxTps[data.name].toFixed(2) 
                 : '--'}
             </span>

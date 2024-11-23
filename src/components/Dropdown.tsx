@@ -26,7 +26,7 @@ export function Dropdown({ selectedChain, setSelectedChain }: DropdownProps) {
 
   const filteredChains = React.useMemo(() => {
     return Object.values(kusamaChainsConfig).filter((chain) => 
-      chain && chain.displayName && chain.displayName.startsWith('YAP') && chain.rpcUrl
+      chain && chain.displayName && chain.rpcUrl
     );
   }, []);
 

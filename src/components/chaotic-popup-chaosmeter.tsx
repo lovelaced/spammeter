@@ -106,25 +106,32 @@ const ChaoticPopupChaosometer = () => {
   const [chainMaxTps, setChainMaxTps] = useState<{ [key: string]: number }>({}); // State to track max TPS per chain
 
   const sendTweet = () => {
-    const tweetText = `Just saw ${totalTps.toFixed(1)} TPS during the @Polkadot spammening! #REKTHEMETER`;
+    const tweetText = `Just saw ${totalTps.toFixed(1)} TPS during the @Polkadot spammening! #RekTheMeter`;
     const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`;
     window.open(tweetUrl, '_blank');
   };
 
   const renderChainName = (chain: ChainData) => {
     const chainConfig = Object.values(kusamaChainsConfig).find(c => c.paraId === chain.paraId);
-
+  
     if (chainConfig && chainConfig.icon) {
       const Icon = chainConfig.icon;
       return (
-        <div className="p-1 rounded-full" style={{ backgroundColor: chainConfig.color }}>
-          <Icon className="w-4 h-4 text-white" aria-label={chain.name} />
+        <div className="flex items-center gap-2">
+          <div
+            className="p-1 rounded-full"
+            style={{ backgroundColor: chainConfig.color }}
+          >
+            <Icon className="w-4 h-4 text-white" aria-label={chain.name} />
+          </div>
+          <span className="truncate">{chainConfig.displayName || chain.name}</span>
         </div>
       );
     }
-
+  
     return <span className="truncate">{chain.name}</span>;
   };
+  
 
   return (
     <div className="min-h-screen bg-white p-4 font-mono text-black relative overflow-hidden">

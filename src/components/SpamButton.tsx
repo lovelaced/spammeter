@@ -12,7 +12,7 @@ interface SpamButtonProps {
   disabled: boolean;
 }
 
-const LIMIT = 7000;
+const LIMIT = 5000;
 
 export function SpamButton({ rpcUrl, disabled }: SpamButtonProps) {
   const [status, setStatus] = useState('idle');
@@ -20,6 +20,7 @@ export function SpamButton({ rpcUrl, disabled }: SpamButtonProps) {
   const [isRunning, setIsRunning] = useState(false);
   const [api, setApi] = useState<ApiPromise | null>(null);
   const [isApiReady, setIsApiReady] = useState(false);
+  const [generatedAccount, setGeneratedAccount] = useState<{ mnemonic: string; address: string } | null>(null);
 
   let activeWsProvider: WsProvider | null = null; // Track the active websocket provider
 
@@ -139,47 +140,55 @@ export function SpamButton({ rpcUrl, disabled }: SpamButtonProps) {
   
 
   const generateFundedAccount = async (api: ApiPromise) => {
-    // Generate a random mnemonic
+    if (generatedAccount) {
+      console.log('Reusing generated account:', generatedAccount);
+      const accountInfo = (await api.query.system.account(generatedAccount.address)) as AccountInfo;
+  
+      if (!accountInfo.data.free.isZero()) {
+        console.log('Account already funded:', generatedAccount.address);
+        return generatedAccount; // reuse the existing account
+      } else {
+        console.log('Account exists but has zero balance, requesting funds again...');
+      }
+    }
+  
+    // generate a new account if no valid existing one
     const mnemonic = mnemonicGenerate();
     console.log('Generated mnemonic:', mnemonic);
-
-    // Derive the account from the mnemonic
+  
     const keyring = new Keyring({ type: 'sr25519' });
     const account = keyring.addFromMnemonic(mnemonic);
     const address = account.address;
-
+  
     console.log('Generated account address:', address);
-
-    // Create the unsigned extrinsic using magicMintExperimental
+  
     try {
       console.log(`Requesting funds for account: ${address}`);
-
       const magicMint = api.tx.balances.magicMintExperimental(address);
-
-      // Submit the unsigned extrinsic
       const hash = await api.rpc.author.submitExtrinsic(magicMint);
       console.log('Submitted magicMintExperimental extrinsic with hash:', hash.toHex());
-
-      // Wait for the balance to be updated
-      let balance = await api.query.system.account(address) as AccountInfo;
+  
+      let balance = (await api.query.system.account(address)) as AccountInfo;
       let retries = 10;
       while (balance.data.free.isZero() && retries > 0) {
-        await new Promise((resolve) => setTimeout(resolve, 6000)); // Wait for 6 seconds
-        balance = await api.query.system.account(address) as AccountInfo;
+        await new Promise((resolve) => setTimeout(resolve, 6000));
+        balance = (await api.query.system.account(address)) as AccountInfo;
         retries--;
       }
-
+  
       if (balance.data.free.isZero()) {
         throw new Error('Account did not receive funds');
       }
-
+  
       console.log('Account funded successfully!');
-      return { account, address, mnemonic };
+      const fundedAccount = { mnemonic, address };
+      setGeneratedAccount(fundedAccount); // store the account in state
+      return fundedAccount;
     } catch (error) {
       console.error('Error funding account:', error);
       throw error;
     }
-  };
+  };  
 
   const runTransfers = async () => {
     if (!api) {
