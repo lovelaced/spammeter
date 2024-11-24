@@ -5,12 +5,12 @@ import { ApiPromise, WsProvider, Keyring } from '@polkadot/api';
 import { cryptoWaitReady } from '@polkadot/util-crypto';
 
 self.onmessage = async (event) => {
-  const { privateKey, startIndex, limit, baseNonce, apiInstanceUrl, batchSize } = event.data;
+  const { privateKey, startIndex, limit, baseNonce, rpcUrl, batchSize } = event.data;
 
   try {
     await cryptoWaitReady();
 
-    const wsProvider = new WsProvider(apiInstanceUrl);
+    const wsProvider = new WsProvider(rpcUrl);
     const api = await ApiPromise.create({ provider: wsProvider });
     const keyring = new Keyring({ type: 'sr25519' });
 
@@ -48,4 +48,3 @@ self.onmessage = async (event) => {
     self.postMessage({ error: error instanceof Error ? error.message : String(error) });
   }
 };
-

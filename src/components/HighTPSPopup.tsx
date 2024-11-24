@@ -1,9 +1,17 @@
 import React from 'react';
 import { Clock, Zap } from 'lucide-react';
+import { ChainData } from './types';
+import { kusamaChainsConfig } from './chains';
 
 interface HighTPSPopupProps {
-  chainData: Record<string, { tps: number; blockTime: number, name: string }>;
+  chainData: Record<string, ChainData>;
 }
+
+const renderChainName = (chain: ChainData) => {
+  const chainConfig = Object.values(kusamaChainsConfig).find(c => c.paraId === chain.paraId);
+  return chainConfig?.displayName || chain.name;
+};
+
 
 export const HighTPSPopup: React.FC<HighTPSPopupProps> = ({ chainData }) => {
   const highTPSChains = Object.entries(chainData)
@@ -21,9 +29,9 @@ export const HighTPSPopup: React.FC<HighTPSPopupProps> = ({ chainData }) => {
           <div className="text-black text-sm mt-2">charging...</div>
         </div>
       ) : (
-        highTPSChains.map(([name, data]) => (
+        highTPSChains.map(([chainKey, data]) => (
           <div
-            key={name}
+            key={chainKey}
             className="bg-white border-2 border-black p-2 flex flex-col items-center justify-center"
             style={{ boxShadow: '2px 2px 0 0 rgba(0,0,0,1)' }}
           >
@@ -42,7 +50,9 @@ export const HighTPSPopup: React.FC<HighTPSPopupProps> = ({ chainData }) => {
                 <div className="text-[8px] mt-0.5">TPS</div>
               </div>
             </div>
-            <div className="text-[10px] font-bold mt-1 truncate w-full text-center">{data.name}</div>
+            <div className="text-[10px] font-bold mt-1 truncate w-full text-center">
+              {renderChainName(data)}
+            </div>
             <div className="text-[8px] mt-0.5 flex items-center justify-center">
               <Clock className="w-3 h-3 mr-0.5" />
               {data.blockTime?.toFixed(2)}s
