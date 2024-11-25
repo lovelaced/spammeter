@@ -149,18 +149,15 @@ const ChaoticPopupChaosometer = () => {
           </div>
           {/* Container for Dropdown and Buttons */}
           <div className="flex flex-col sm:flex-row sm:items-start sm:space-x-4 pt-4 sm:pt-0">
-            {/* Dropdown */}
+            {/* Dropdown
             <div className="mb-2 sm:mb-0">
               <Dropdown selectedChain={selectedChain} setSelectedChain={setSelectedChain} />
             </div>
-            {/* Buttons Container */}
             <div className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-2">
-              {/* spam button */}
               <div className="flex flex-col items-start space-y-1">
                 <SpamButton rpcUrl={selectedChain} disabled={!selectedChain} />
               </div>
 
-              {/* send tweet button */}
               <Button
                 onClick={sendTweet}
                 className="h-[38px] bg-black text-white border-4 border-black px-4 py-2 text-sm font-bold hover:bg-white hover:text-black transition-colors active:shadow-none relative overflow-hidden group"
@@ -171,6 +168,7 @@ const ChaoticPopupChaosometer = () => {
                 <span className="absolute inset-0 bg-gradient-to-r from-[#7916F3] to-[#ea4070] opacity-0 group-hover:opacity-100 transition-opacity" />
               </Button>
             </div>
+               send tweet button */}
           </div>
         </div>
         <div className="grid grid-cols-12 gap-4 mb-4">

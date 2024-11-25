@@ -15,8 +15,8 @@ const renderChainName = (chain: ChainData) => {
 
 export const HighTPSPopup: React.FC<HighTPSPopupProps> = ({ chainData }) => {
   const highTPSChains = Object.entries(chainData)
-    .filter(([, data]) => data.tps > 100 && Number.isFinite(data.tps))
-    .sort(([, a], [, b]) => b.tps - a.tps);
+    .filter(([, data]) => data.instantTps > 100 && Number.isFinite(data.instantTps))
+    .sort(([, a], [, b]) => b.instantTps - a.instantTps);
 
   return (
     <div className="w-full h-full bg-white overflow-auto p-2 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
@@ -39,14 +39,14 @@ export const HighTPSPopup: React.FC<HighTPSPopupProps> = ({ chainData }) => {
               <div
                 className="absolute inset-0 rounded-full"
                 style={{
-                  background: `conic-gradient(black ${data.tps / 50}deg, transparent ${
+                  background: `conic-gradient(black ${data.instantTps / 50}deg, transparent ${
                     data.tps / 50
                   }deg)`,
                   transform: 'rotate(-90deg)',
                 }}
               />
               <div className="z-10 bg-white rounded-full w-16 h-16 flex flex-col items-center justify-center">
-                <div className="text-xs font-bold">{Math.round(data.tps)}</div>
+                <div className="text-xs font-bold">{Math.round(data.instantTps)}</div>
                 <div className="text-[8px] mt-0.5">TPS</div>
               </div>
             </div>

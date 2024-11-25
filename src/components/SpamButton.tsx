@@ -351,7 +351,7 @@ export function SpamButton({ rpcUrl, disabled }: SpamButtonProps) {
   
       const allSignedTxs = signedTxsArrays.flat();
   
-      console.log(`All workers completed signing. Total signed transactions: ${allSignedTxs.length}`);
+      console.log(`All workers completed signing.`);
       dispatch({ type: 'SET_STATUS', payload: 'Submitting transactions...' });
       dispatch({ type: 'SET_PROGRESS', payload: 50 }); // start submission phase
   

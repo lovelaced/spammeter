@@ -33,61 +33,74 @@ export abstract class DataSource {
 
     let nameMapping;
     if (update.relay === "Polkadot") {
-      return; // ignore polkadot data
-      nameMapping = polkadotParaIdToChainName;
+        return; // ignore polkadot data
+        nameMapping = polkadotParaIdToChainName;
     } else if (update.relay === "Kusama") {
-      nameMapping = kusamaParaIdToChainName;
+        nameMapping = kusamaParaIdToChainName;
     } else if (update.relay === "Westend") {
-      nameMapping = westendParaIdToChainName;
+        nameMapping = westendParaIdToChainName;
     } else {
-      nameMapping = {}; // fallback to empty mapping if unknown
+        nameMapping = {}; // fallback to empty mapping if unknown
     }
 
     const displayName = nameMapping[update.para_id] || `${update.relay}-${update.para_id}`;
     const blockTime = update.block_time_seconds ?? 0;
 
+    const totalRefTime = (update.ref_time?.normal || 0) +
+                         (update.ref_time?.operational || 0) +
+                         (update.ref_time?.mandatory || 0);
+
+    const totalProofSize = (update.proof_size?.normal || 0) +
+                           (update.proof_size?.operational || 0) +
+                           (update.proof_size?.mandatory || 0);
+
     const updatedRecentBlocks = [
-      ...(existingChain?.recentBlocks || []),
-      {
-        chainId: chainId,
-        extrinsics: Math.max(0, update.extrinsics_num - 2), // Ensure extrinsics is at least 0
-        timestamp: update.timestamp,
-        blockTime: update.block_time_seconds ?? 0,
-        blockNumber: update.block_number,      // Include blockNumber
-        weight: update.total_proof_size,       // Include weight
-      },
+        ...(existingChain?.recentBlocks || []),
+        {
+            chainId: chainId,
+            extrinsics: Math.max(0, update.extrinsics_num - 2), // Ensure extrinsics is at least 0
+            timestamp: update.timestamp,
+            blockTime: update.block_time_seconds ?? 0,
+            blockNumber: update.block_number,
+            weight: totalRefTime + totalProofSize,  // Use the calculated ref_time sum
+            proofSize: totalProofSize, // Include proof_size sum
+        },
     ];
+
+    // Calculate instantaneous TPS (last block only)
+    const instantTps = update.extrinsics_num / (blockTime || 1); // Avoid division by zero
 
     // Optionally, prune old blocks to manage memory
     const currentTime = Date.now();
-    const cutoffTime = currentTime - this.TARGET_WINDOW_SIZE*2; // 60 seconds ago
+    const cutoffTime = currentTime - this.TARGET_WINDOW_SIZE * 2; // 60 seconds ago
     const prunedRecentBlocks = updatedRecentBlocks.filter(
-      (block) => block.timestamp >= cutoffTime
+        (block) => block.timestamp >= cutoffTime
     );
 
     const { tps: chainTps } = this.calculateTps(updatedRecentBlocks);
     const chainTpsEma = this.calculateEma(existingChain?.tpsEma || chainTps, chainTps);
 
     const updatedChain: ChainData = {
-      ...(existingChain || {}),
-      id: chainId,
-      name: displayName,
-      paraId: update.para_id,
-      relay: update.relay,
-      blockNumber: update.block_number,
-      extrinsics: update.extrinsics_num,
-      accumulatedExtrinsics: (existingChain?.accumulatedExtrinsics || 0) + update.extrinsics_num,
-      blockTime: blockTime,
-      timestamp: update.timestamp,
-      weight: update.total_proof_size,
-      tps: chainTps,
-      tpsEma: chainTpsEma,
-      recentBlocks: prunedRecentBlocks
+        ...(existingChain || {}),
+        id: chainId,
+        name: displayName,
+        paraId: update.para_id,
+        relay: update.relay,
+        blockNumber: update.block_number,
+        extrinsics: update.extrinsics_num,
+        accumulatedExtrinsics: (existingChain?.accumulatedExtrinsics || 0) + update.extrinsics_num,
+        blockTime: blockTime,
+        timestamp: update.timestamp,
+        weight: totalRefTime + totalProofSize, // Update weight to reflect the summed ref_time and proof_size
+        tps: chainTps,
+        tpsEma: chainTpsEma,
+        instantTps, // Add instantaneous TPS here
+        recentBlocks: prunedRecentBlocks,
     };
 
     const updatedChainData: ChainDataMap = {
-      ...this.state.chainData,
-      [chainId]: updatedChain,
+        ...this.state.chainData,
+        [chainId]: updatedChain,
     };
 
     const { tps: totalTps, timeWindow: globalTimeWindow } = this.calculateTotalTps(updatedChainData);
@@ -96,15 +109,16 @@ export abstract class DataSource {
     const confidenceMetric = this.calculateConfidenceMetric(globalTimeWindow, dataPoints);
 
     this.state = { 
-      chainData: updatedChainData, 
-      totalTps, 
-      totalTpsEma, 
-      confidenceMetric,
-      dataPoints,
+        chainData: updatedChainData, 
+        totalTps, 
+        totalTpsEma, 
+        confidenceMetric,
+        dataPoints,
     };
 
     this.notifyListeners();
-  }
+}
+
 
   private calculateTps(blocks: Array<{ extrinsics: number; timestamp: number; blockTime?: number }>): { tps: number, timeWindow: number } {
     if (blocks.length < 2) return { tps: 0, timeWindow: 0 };

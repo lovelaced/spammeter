@@ -116,7 +116,7 @@ export function BlockchainVisualizer({ blocks = [] }: BlockchainVisualizerProps)
 }
 
 const BlockContent: React.FC<{ block: VisibleBlock }> = ({ block }) => {
-  const percentFull = Math.round(block.weight * 100);
+  const percentFull = Math.min(Math.round(block.weight * 100), 100);
   
   return (
     <div
