@@ -90,6 +90,16 @@ export class MockDataSource extends DataSource {
       block_time_seconds: paraState.blockTimeSeconds,
       timestamp: paraState.nextBlockTime,
       total_proof_size: Math.random(),
+      ref_time: {
+        normal: Math.random(),
+        operational: Math.random(),
+        mandatory: Math.random(),
+      },
+      proof_size: {
+        normal: Math.random(),
+        operational: Math.random(),
+        mandatory: Math.random(),
+      },
     };
 
     // Update state

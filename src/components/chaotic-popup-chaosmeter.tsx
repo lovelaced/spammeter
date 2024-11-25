@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Button } from '@/components/ui/button';
+//import { Button } from '@/components/ui/button';
 import { useDataSource } from './useDataSource';
 import { RealDataSource } from './RealDataSource';
 import { TestnetDataSource } from './TestnetDataSource';
@@ -15,12 +15,12 @@ import { HighTPSPopup } from './HighTPSPopup';
 import { TPSMeter } from './TpsMeter';
 import { ChainData } from './types';
 import { kusamaChainsConfig } from './chains';
-import { Dropdown } from './Dropdown';
-import SpamButton from './SpamButton';
+//import { Dropdown } from './Dropdown';
+//import SpamButton from './SpamButton';
 import Leaderboard from './Leaderboard';
 
 const ChaoticPopupChaosometer = () => {
-  const [selectedChain, setSelectedChain] = useState<string>(''); // Manage the selected chain state
+  //const [selectedChain, setSelectedChain] = useState<string>(''); // Manage the selected chain state
   const [useMockData] = useState(false)
   const dataSource = useMemo(() => useMockData ? new TestnetDataSource() : new RealDataSource(), [useMockData])
   const { chainData, totalTps, confidenceMetric } = useDataSource(dataSource);
@@ -105,11 +105,11 @@ const ChaoticPopupChaosometer = () => {
 
   const [chainMaxTps, setChainMaxTps] = useState<{ [key: string]: number }>({}); // State to track max TPS per chain
 
-  const sendTweet = () => {
-    const tweetText = `Just saw ${totalTps.toFixed(1)} TPS during the @Polkadot spammening! #RekTheMeter`;
-    const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`;
-    window.open(tweetUrl, '_blank');
-  };
+ // const sendTweet = () => {
+ //   const tweetText = `Just saw ${totalTps.toFixed(1)} TPS during the @Polkadot spammening! #RekTheMeter`;
+ //   const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`;
+ //   window.open(tweetUrl, '_blank');
+ // };
 
   const renderChainName = (chain: ChainData) => {
     const chainConfig = Object.values(kusamaChainsConfig).find(c => c.paraId === chain.paraId);
