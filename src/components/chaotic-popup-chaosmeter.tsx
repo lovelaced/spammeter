@@ -111,27 +111,37 @@ const ChaoticPopupChaosometer = () => {
  //   window.open(tweetUrl, '_blank');
  // };
 
-  const renderChainName = (chain: ChainData) => {
-    const chainConfig = Object.values(kusamaChainsConfig).find(c => c.paraId === chain.paraId);
-  
-    if (chainConfig && chainConfig.icon) {
-      const Icon = chainConfig.icon;
-      return (
-        <div className="flex items-center gap-2">
-          <div
-            className="p-1 rounded-full"
-            style={{ backgroundColor: chainConfig.color }}
-          >
-            <Icon className="w-4 h-4 text-white" aria-label={chain.name} />
-          </div>
-          <span className="truncate">{chainConfig.displayName || chain.name}</span>
+ const renderChainName = (chain: ChainData) => {
+  // Find the chain configuration by matching paraId
+  const chainConfig = Object.values(kusamaChainsConfig).find(c => c.paraId === chain.paraId);
+
+  // Determine the displayName to show, prioritizing the config's displayName or falling back to the chain's name
+  const displayName = chainConfig?.displayName || chain.name;
+
+  // Check if the chain has an icon configuration
+  if (chainConfig && chainConfig.icon) {
+    const Icon = chainConfig.icon;
+    return (
+      <div className="flex items-center gap-2">
+        <div
+          className="p-1 rounded-full"
+          style={{ backgroundColor: chainConfig.color }}
+        >
+          <Icon className="w-4 h-4 text-white" aria-label={displayName} />
         </div>
-      );
-    }
-  
-    return <span className="truncate">{chain.name}</span>;
-  };
-  
+        <span className="truncate">{displayName}</span>
+      </div>
+    );
+  }
+
+  // Always return the displayName, even if there is no icon
+  return (
+    <div className="flex items-center gap-2">
+      <span className="truncate">{displayName}</span>
+    </div>
+  );
+};
+
 
   return (
     <div className="min-h-screen bg-white p-4 font-mono text-black relative overflow-hidden">

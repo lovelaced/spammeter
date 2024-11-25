@@ -62,10 +62,25 @@ export const polkadotChainsConfig: ChainsConfig = {
 } as const;
 
 export const kusamaChainsConfig: ChainsConfig = {
-  YAP3363: { paraId: 3363, displayName: 'YAP3363'},
-  YAP3362: { paraId: 3362, displayName: 'YAP3362'}, // Thematic Green
-  YAP3361: { paraId: 3361, displayName: 'YAP3361'}, // Thematic Yellow
-  YAP3360: { paraId: 3360, displayName: 'YAP3360'}, // Thematic Orange
+  YAP3363: { paraId: 3363, displayName: 'SPAM-3363'},
+  YAP3362: { paraId: 3362, displayName: 'SPAM-3362'}, // Thematic Green
+  YAP3361: { paraId: 3361, displayName: 'SPAM-3361'}, // Thematic Yellow
+  YAP3360: { paraId: 3360, displayName: 'SPAM-3360'}, // Thematic Orange
+  YAP3364: { paraId: 3364, displayName: 'SPAM-3364'}, // Thematic Red
+  YAP3365: { paraId: 3365, displayName: 'SPAM-3365'}, // Thematic Teal
+  YAP3366: { paraId: 3366, displayName: 'SPAM-3366'}, // Burnt Orange
+  YAP3367: { paraId: 3367, displayName: 'SPAM-3367'}, // Thematic Magenta
+  YAP3368: { paraId: 3368, displayName: 'SPAM-3368'}, // Sky Blue
+  YAP3369: { paraId: 3369, displayName: 'SPAM-3369'}, // Bright Green
+  YAP3370: { paraId: 3370, displayName: 'SPAM-3370'}, // Neon Purple
+  YAP3371: { paraId: 3371, displayName: 'SPAM-3371'}, // Golden Orange
+  YAP3372: { paraId: 3372, displayName: 'SPAM-3372'}, // Steely Grey
+  YAP3373: { paraId: 3373, displayName: 'SPAM-3373'}, // Crimson
+  YAP3374: { paraId: 3374, displayName: 'SPAM-3374'}, // Thematic Green
+  YAP3375: { paraId: 3375, displayName: 'SPAM-3375'}, // Thematic Yellow
+  YAP3376: { paraId: 3376, displayName: 'SPAM-3376'}, // Thematic Orange
+  YAP3377: { paraId: 3377, displayName: 'SPAM-3377'}, // Thematic Red
+  YAP3378: { paraId: 3378, displayName: 'SPAM-3378'}, // Thematic Teal
   YAP3359: { paraId: 3359, displayName: 'FASTER', icon: Rabbit, color: '#F31689', rpcUrl: "wss://kusama-yap-3359.parity-chains.parity.io" }, // Thematic Orange
   YAP3379: { paraId: 3379, displayName: 'SUPERCYCLE', icon: RefreshCw, color: '#E74C3C', rpcUrl: "wss://kusama-yap-3379.parity-chains.parity.io" }, // Thematic Red
   YAP3380: { paraId: 3380, displayName: 'SPAMLOVERS', icon: FileStack, color: '#1ADDA8', rpcUrl: "wss://kusama-yap-3380.parity-chains.parity.io" }, // Thematic Teal
