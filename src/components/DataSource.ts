@@ -68,7 +68,7 @@ export abstract class DataSource {
     ];
 
     // Calculate instantaneous TPS (last block only)
-    const instantTps = update.extrinsics_num / (blockTime || 1); // Avoid division by zero
+    const instantTps = Math.max(0, update.extrinsics_num - 2) / (blockTime || 1); // Avoid division by zero
 
     // Optionally, prune old blocks to manage memory
     const currentTime = Date.now();

@@ -188,8 +188,8 @@ export const polkadotParaIdToChainName = Object.fromEntries(
 ) as Record<number, PolkadotChainName>;
 
 export const kusamaParaIdToChainName = Object.fromEntries(
-  Object.entries(kusamaChainsConfig).map(([chain, config]) => [config.paraId, chain])
-) as Record<number, KusamaChainName>;
+  Object.entries(kusamaChainsConfig).map(([_, config]) => [config.paraId, config.displayName])
+) as Record<number, string>;
 
 export const westendParaIdToChainName = Object.fromEntries(
   Object.entries(westendChainsConfig).map(([chain, config]) => [config.paraId, chain])
