@@ -99,23 +99,25 @@ export const BlockFeed: React.FC<BlockFeedProps> = ({ chainData }) => {
                 )}
               </span>
               <span
-                className={`flex items-center ${block.blockTime !== undefined && block.blockTime < 5
-                  ? 'font-bold text-white'
-                  : 'text-[#9ab1a9]'
+                className={`flex items-center ${block.blockTime !== undefined && block.blockTime > 0
+                    ? block.blockTime < 5
+                      ? 'font-bold text-white'
+                      : 'text-[#9ab1a9]'
+                    : 'text-[#9ab1a9]'
                   }`}
               >
-                {block.blockTime !== undefined && block.blockTime > 0
-                  ? (
-                    <>
-                      {`${block.blockTime.toFixed(2)}s`}
-                      {block.blockTime < 5 && (
-                        <Zap className="ml-1 h-4 w-4 text-[#f2ff0d]" />
-                      )}
-                    </>
-                  )
-                  : '--'}
-
+                {block.blockTime !== undefined && block.blockTime > 0 ? (
+                  <>
+                    {`${block.blockTime.toFixed(2)}s`}
+                    {block.blockTime < 5 && (
+                      <Zap className="ml-1 h-4 w-4 text-[#f2ff0d]" />
+                    )}
+                  </>
+                ) : (
+                  '--'
+                )}
               </span>
+
             </div>
           ))}
         </div>
