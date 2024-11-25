@@ -10,7 +10,7 @@ interface LeaderboardProps {
 const Leaderboard: React.FC<LeaderboardProps> = ({ chainData, chainMaxTps, renderChainName }) => {
   // sort chains by tps
   const leaderboard = Object.values(chainData)
-    .filter((chain) => !isNaN(chain.tps) && isFinite(chain.tps) && chainMaxTps[chain.name] > 0)
+    .filter((chain) => !isNaN(chain.tps) && isFinite(chain.tps))
     .sort((a, b) => b.tps - a.tps);
 
   return (

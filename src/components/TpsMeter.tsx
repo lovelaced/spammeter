@@ -11,7 +11,7 @@ export const TPSMeter: React.FC<TPSMeterProps> = ({ totalTps, isHighConfidence, 
   // Logarithmic scale calculation
   const getScaledAngle = (tps: number) => {
     const minTps = 1; // To avoid log(0)
-    const maxTps = 60000; // Maximum TPS
+    const maxTps = 100000; // Maximum TPS
     const logMinTps = Math.log10(minTps);
     const logMaxTps = Math.log10(maxTps);
     const logTps = Math.log10(Math.max(minTps, tps));

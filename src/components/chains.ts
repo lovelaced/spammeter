@@ -69,13 +69,13 @@ export const kusamaChainsConfig: ChainsConfig = {
   YAP3359: { paraId: 3359, displayName: 'FASTER', icon: Rabbit, color: '#F31689', rpcUrl: "wss://kusama-yap-3359.parity-chains.parity.io" }, // Thematic Orange
   YAP3379: { paraId: 3379, displayName: 'SUPERCYCLE', icon: RefreshCw, color: '#E74C3C', rpcUrl: "wss://kusama-yap-3379.parity-chains.parity.io" }, // Thematic Red
   YAP3380: { paraId: 3380, displayName: 'SPAMLOVERS', icon: FileStack, color: '#1ADDA8', rpcUrl: "wss://kusama-yap-3380.parity-chains.parity.io" }, // Thematic Teal
-  YAP3381: { paraId: 3381, displayName: 'CHEERS', icon: Beer, color: '#F07D16', rpcUrl: "wss://kusama-yap-3381.parity-chains.parity.io" }, // Burnt Orange
+  YAP3381: { paraId: 3381, displayName: 'CHEERS TO CHAOS', icon: Beer, color: '#F07D16', rpcUrl: "wss://kusama-yap-3381.parity-chains.parity.io" }, // Burnt Orange
   YAP3382: { paraId: 3382, displayName: 'GM', icon: Sunrise, color: '#F39C12', rpcUrl: "wss://kusama-yap-3382.parity-chains.parity.io" }, // Thematic Magenta
   YAP3383: { paraId: 3383, displayName: 'UP ONLY', icon: ChartNoAxesCombined, color: '#13D916', rpcUrl: "wss://kusama-yap-3383.parity-chains.parity.io" }, // Sky Blue
   YAP3384: { paraId: 3384, displayName: 'WEB3 CLOUD', icon: Cloud, color: '#16A2F3', rpcUrl: "wss://kusama-yap-3384.parity-chains.parity.io" }, // Bright Green
-  YAP3385: { paraId: 3385, displayName: '♥︎', icon: Heart, color: '#E916F3', rpcUrl: "wss://kusama-yap-3385.parity-chains.parity.io" }, // Neon Purple
-  YAP3386: { paraId: 3386, displayName: 'JAM', icon: Guitar, color: '#333333', rpcUrl: "wss://kusama-yap-3386.parity-chains.parity.io" }, // Golden Orange
-  YAP3387: { paraId: 3387, displayName: 'MOONSHOT', icon: Moon, color: '#34495E', rpcUrl: "wss://kusama-yap-3387.parity-chains.parity.io" }, // Steely Grey
+  YAP3385: { paraId: 3385, displayName: 'KUS BOOST', icon: Heart, color: '#E916F3', rpcUrl: "wss://kusama-yap-3385.parity-chains.parity.io" }, // Neon Purple
+  YAP3386: { paraId: 3386, displayName: 'JAM PARTY', icon: Guitar, color: '#333333', rpcUrl: "wss://kusama-yap-3386.parity-chains.parity.io" }, // Golden Orange
+  YAP3387: { paraId: 3387, displayName: 'WEN MOON?', icon: Moon, color: '#34495E', rpcUrl: "wss://kusama-yap-3387.parity-chains.parity.io" }, // Steely Grey
   YAP3388: { paraId: 3388, displayName: 'CANARY', icon: Bird, color: '#3316F3', rpcUrl: "wss://kusama-yap-3388.parity-chains.parity.io" }, // Crimson 
   Kusama: { paraId: 2, displayName: 'Kusama' },
   AssetHub: { paraId: 1000, displayName: 'AssetHub' },

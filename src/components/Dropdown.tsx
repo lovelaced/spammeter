@@ -51,7 +51,7 @@ export function Dropdown({ selectedChain, setSelectedChain }: DropdownProps) {
   return (
     <div className="relative" ref={dropdownRef}>
       <button
-        className="h-[38px] bg-black text-white border-2 border-black px-4 py-2 text-sm font-bold transition-colors active:shadow-none relative overflow-hidden w-[200px] flex items-center justify-between"
+        className="h-[38px] bg-black text-white border-2 border-black px-4 py-2 text-sm font-bold transition-colors active:shadow-none relative overflow-hidden w-[230px] flex items-center justify-between"
         onClick={() => setIsOpen(!isOpen)}
       >
         <span className="truncate flex items-center">
