@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-//import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/button';
 import { useDataSource } from './useDataSource';
 import { RealDataSource } from './RealDataSource';
 import { TestnetDataSource } from './TestnetDataSource';
@@ -15,12 +15,12 @@ import { HighTPSPopup } from './HighTPSPopup';
 import { TPSMeter } from './TpsMeter';
 import { ChainData } from './types';
 import { kusamaChainsConfig } from './chains';
-//import { Dropdown } from './Dropdown';
-//import SpamButton from './SpamButton';
+import { Dropdown } from './Dropdown';
+import SpamButton from './SpamButton';
 import Leaderboard from './Leaderboard';
 
 const ChaoticPopupChaosometer = () => {
-  //const [selectedChain, setSelectedChain] = useState<string>(''); // Manage the selected chain state
+  const [selectedChain, setSelectedChain] = useState<string>(''); // Manage the selected chain state
   const [useMockData] = useState(false)
   const dataSource = useMemo(() => useMockData ? new TestnetDataSource() : new RealDataSource(), [useMockData])
   const { chainData, totalTps, confidenceMetric } = useDataSource(dataSource);
@@ -105,11 +105,11 @@ const ChaoticPopupChaosometer = () => {
 
   const [chainMaxTps, setChainMaxTps] = useState<{ [key: string]: number }>({}); // State to track max TPS per chain
 
- // const sendTweet = () => {
- //   const tweetText = `Just saw ${totalTps.toFixed(1)} TPS during the @Polkadot spammening! #RekTheMeter`;
- //   const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`;
- //   window.open(tweetUrl, '_blank');
- // };
+  const sendTweet = () => {
+    const tweetText = `Just saw ${totalTps.toFixed(1)} TPS during the @Polkadot spammening! #RekTheMeter`;
+    const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`;
+    window.open(tweetUrl, '_blank');
+  };
 
  const renderChainName = (chain: ChainData) => {
   // Find the chain configuration by matching paraId
@@ -159,7 +159,7 @@ const ChaoticPopupChaosometer = () => {
           </div>
           {/* Container for Dropdown and Buttons */}
           <div className="flex flex-col sm:flex-row sm:items-start sm:space-x-4 pt-4 sm:pt-0">
-            {/* Dropdown
+            {/* Dropdown */}
             <div className="mb-2 sm:mb-0">
               <Dropdown selectedChain={selectedChain} setSelectedChain={setSelectedChain} />
             </div>
@@ -178,7 +178,7 @@ const ChaoticPopupChaosometer = () => {
                 <span className="absolute inset-0 bg-gradient-to-r from-[#7916F3] to-[#ea4070] opacity-0 group-hover:opacity-100 transition-opacity" />
               </Button>
             </div>
-               send tweet button */}
+              {/*} send tweet button */}
           </div>
         </div>
         <div className="grid grid-cols-12 gap-4 mb-4">
