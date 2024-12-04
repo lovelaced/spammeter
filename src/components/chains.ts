@@ -74,7 +74,7 @@ export const kusamaChainsConfig: ChainsConfig = {
   YAP3360: { paraId: 3360, displayName: 'FASTER', icon: Rabbit, color: '#F31689', rpcUrl: "wss://kusama-yap-3360.parity-chains.parity.io" }, // Thematic Orange
   YAP3361: { paraId: 3361, displayName: 'SUPERCYCLE', icon: RefreshCw, color: '#E74C3C', rpcUrl: "wss://kusama-yap-3361.parity-chains.parity.io" }, // Thematic Red
   YAP3362: { paraId: 3362, displayName: 'SPAMLOVERS', icon: FileStack, color: '#1ADDA8', rpcUrl: "wss://kusama-yap-3362.parity-chains.parity.io" }, // Thematic Teal
-  YAP3363: { paraId: 3363, displayName: 'CHEERS TO CHAOS', icon: Beer, color: '#F07D16', rpcUrl: "wss://kusama-yap-3363.parity-chains.parity.io" }, // Burnt Orange
+  YAP3363: { paraId: 3363, displayName: 'CHAOS BEERS', icon: Beer, color: '#F07D16', rpcUrl: "wss://kusama-yap-3363.parity-chains.parity.io" }, // Burnt Orange
   YAP3364: { paraId: 3364, displayName: 'GM', icon: Sunrise, color: '#F39C12', rpcUrl: "wss://kusama-yap-3364.parity-chains.parity.io" }, // Thematic Magenta
   YAP3365: { paraId: 3365, displayName: 'UP ONLY', icon: ChartNoAxesCombined, color: '#13D916', rpcUrl: "wss://kusama-yap-3365.parity-chains.parity.io" }, // Sky Blue
   YAP3366: { paraId: 3366, displayName: 'WEB3 CLOUD', icon: Cloud, color: '#16A2F3', rpcUrl: "wss://kusama-yap-3366.parity-chains.parity.io" }, // Bright Green
